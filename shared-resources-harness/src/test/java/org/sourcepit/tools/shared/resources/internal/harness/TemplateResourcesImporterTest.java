@@ -16,6 +16,7 @@ import org.sourcepit.tools.shared.resources.internal.harness.TemplateResourcesIm
  */
 public class TemplateResourcesImporterTest extends TestCase
 {
+   private static final String SHARED_RESOURCES_LOCATION = "META-INF/shared-test-resources/org.sourcepit.tools/shared-resources-harness";
    private File ws;
 
    @Override
@@ -77,7 +78,7 @@ public class TemplateResourcesImporterTest extends TestCase
    public void testImportFile() throws Exception
    {
       System.out.println(getName());
-      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), "META-INF/test-templates",
+      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
          "täst.txt", ws, false);
       assertEquals(1, ws.list().length);
       assertEquals("täst.txt", ws.list()[0]);
@@ -85,7 +86,7 @@ public class TemplateResourcesImporterTest extends TestCase
 
    public void testImportFile_keepArchivePaths() throws Exception
    {
-      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), "META-INF/test-templates",
+      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
          "täst.txt", ws, true);
       assertEquals(1, ws.list().length);
       assertEquals("täst.txt", ws.list()[0]);
@@ -93,7 +94,7 @@ public class TemplateResourcesImporterTest extends TestCase
 
    public void testImportArchive() throws Exception
    {
-      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), "META-INF/test-templates", "täst",
+      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst",
          ws, false);
       assertEquals(2, ws.list().length);
 
@@ -117,7 +118,7 @@ public class TemplateResourcesImporterTest extends TestCase
 
    public void testImportArchive_keepArchivePaths() throws Exception
    {
-      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), "META-INF/test-templates", "täst",
+      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst",
          ws, true);
       assertEquals(1, ws.list().length);
 
@@ -146,7 +147,7 @@ public class TemplateResourcesImporterTest extends TestCase
 
    public void testImportFileInArchive() throws Exception
    {
-      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), "META-INF/test-templates",
+      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
          "täst/foo.txt", ws, false);
       assertEquals(1, ws.list().length);
 
@@ -157,7 +158,7 @@ public class TemplateResourcesImporterTest extends TestCase
 
    public void testImportFileInArchive_keepArchivePaths() throws Exception
    {
-      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), "META-INF/test-templates",
+      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
          "täst/foo.txt", ws, true);
       assertEquals(1, ws.list().length);
 
@@ -175,7 +176,7 @@ public class TemplateResourcesImporterTest extends TestCase
 
    public void testImportDirInArchive() throws Exception
    {
-      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), "META-INF/test-templates",
+      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
          "täst/foo", ws, false);
       assertEquals(1, ws.list().length);
 
@@ -186,7 +187,7 @@ public class TemplateResourcesImporterTest extends TestCase
 
    public void testImportDirInArchive_keepArchivePaths() throws Exception
    {
-      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), "META-INF/test-templates",
+      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
          "täst/foo", ws, true);
       assertEquals(1, ws.list().length);
 

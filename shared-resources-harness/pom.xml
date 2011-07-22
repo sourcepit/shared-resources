@@ -33,6 +33,9 @@
 						<goals>
 							<goal>test-jar</goal>
 						</goals>
+						<configuration>
+							<defaultManifestFile>${project.build.testOutputDirectory}/META-INF/MANIFEST.MF</defaultManifestFile>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

@@ -22,6 +22,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.resources.ResourcesMojo;
 import org.codehaus.plexus.util.ReaderFactory;
 import org.sourcepit.common.mf.internal.merge.ManifestMerger;
+import org.sourcepit.common.mf.internal.merge.MultiValueHeaderMerger;
 import org.sourcepit.common.mf.internal.model.Manifest;
 import org.sourcepit.common.mf.internal.model.ManifestFactory;
 import org.sourcepit.tools.manifest.internal.mojo.MavenProjectManifestMerger;
@@ -87,10 +88,16 @@ public abstract class AbstractSharedResourcesMojo extends ResourcesMojo
          }
          FileUtils.deleteDirectory(workingDirectory);
 
-         Manifest manifest = ManifestFactory.eINSTANCE.createManifest();
-         manifest.getHeaders().put("Resource-Locations", getTargetPath() == null ? "" : getTargetPath());
+         final Manifest manifest = ManifestFactory.eINSTANCE.createManifest();
+         manifest.getHeaders().put("Shared-Resources", getTargetPath() == null ? "" : getTargetPath());
 
-         new MavenProjectManifestMerger().merge(project, getManifestFile(), new ManifestMerger(), manifest);
+         final MultiValueHeaderMerger headerMerger = new MultiValueHeaderMerger();
+         headerMerger.getHeaderNames().add("Shared-Resources");
+
+         final ManifestMerger merger = new ManifestMerger();
+         merger.getHeaderMergers().add(headerMerger);
+
+         new MavenProjectManifestMerger().merge(project, getManifestFile(), merger, manifest);
       }
       catch (IOException e)
       {

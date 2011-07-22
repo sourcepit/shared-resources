@@ -42,7 +42,7 @@ public class SharedResourcesMojo extends AbstractSharedResourcesMojo
    /**
     * Path of the directory under which the templates will appear in the final build artifact.
     * 
-    * @parameter default-value="META-INF/templates"
+    * @parameter default-value="META-INF/shared-resources/${project.groupId}/${project.artifactId}"
     */
    private String targetPath;
 
