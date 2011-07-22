@@ -76,6 +76,7 @@ public class TemplateResourcesImporterTest extends TestCase
 
    public void testImportFile() throws Exception
    {
+      System.out.println(getName());
       new TemplateResourcesImporter().importResources(getClass().getClassLoader(), "META-INF/test-templates",
          "täst.txt", ws, false);
       assertEquals(1, ws.list().length);

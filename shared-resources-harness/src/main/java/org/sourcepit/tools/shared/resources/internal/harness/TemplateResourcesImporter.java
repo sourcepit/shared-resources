@@ -143,6 +143,7 @@ public class TemplateResourcesImporter
    private void importFile(ClassLoader classLoader, String path, String fileName, File targetDir)
       throws FileNotFoundException, IOException
    {
+      System.out.println(path);
       final InputStream in = classLoader.getResourceAsStream(path);
       if (in == null)
       {
@@ -197,6 +198,8 @@ public class TemplateResourcesImporter
 
    protected static String createFullTemplateResourcesPath(String templatesLocation, String templateResourcesPath)
    {
+      System.out.println(templatesLocation);
+      System.out.println(templateResourcesPath);
       final StringBuilder sb = new StringBuilder();
       if (templatesLocation != null)
       {
