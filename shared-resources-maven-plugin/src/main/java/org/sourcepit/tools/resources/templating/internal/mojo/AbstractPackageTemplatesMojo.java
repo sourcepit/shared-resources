@@ -44,7 +44,7 @@ public abstract class AbstractPackageTemplatesMojo extends ResourcesMojo
    private Properties resourceProperties;
 
    /**
-    * @parameter default-value="${project.build.directory}/resources-templating/"
+    * @parameter default-value="${project.build.directory}/shared-resources/"
     * @required
     */
    private File workingDirectory;
