@@ -51,6 +51,12 @@ public class SharedResourcesMojo extends AbstractSharedResourcesMojo
     * @required
     */
    private File manifestFile;
+   
+   /**
+    * @parameter default-value="Shared-Resources"
+    * @required
+    */
+   private String manifestHeaderName;
 
    public File _getOutputDirectory()
    {
@@ -100,5 +106,15 @@ public class SharedResourcesMojo extends AbstractSharedResourcesMojo
    public File getManifestFile()
    {
       return manifestFile;
+   }
+   
+   public String getManifestHeaderName()
+   {
+      return manifestHeaderName;
+   }
+   
+   public void setManifestHeaderName(String manifestHeaderName)
+   {
+      this.manifestHeaderName = manifestHeaderName;
    }
 }

@@ -88,11 +88,13 @@ public abstract class AbstractSharedResourcesMojo extends ResourcesMojo
          }
          FileUtils.deleteDirectory(workingDirectory);
 
+         final String headerName = getManifestHeaderName();
+
          final Manifest manifest = ManifestFactory.eINSTANCE.createManifest();
-         manifest.getHeaders().put("Shared-Resources", getTargetPath() == null ? "" : getTargetPath());
+         manifest.getHeaders().put(headerName, getTargetPath() == null ? "" : getTargetPath());
 
          final MultiValueHeaderMerger headerMerger = new MultiValueHeaderMerger();
-         headerMerger.getHeaderNames().add("Shared-Resources");
+         headerMerger.getHeaderNames().add(headerName);
 
          final ManifestMerger merger = new ManifestMerger();
          merger.getHeaderMergers().add(headerMerger);
@@ -246,4 +248,8 @@ public abstract class AbstractSharedResourcesMojo extends ResourcesMojo
    public abstract void setManifestFile(File manifestFile);
 
    public abstract File getManifestFile();
+
+   public abstract String getManifestHeaderName();
+
+   public abstract void setManifestHeaderName(String manifestHeaderName);
 }
