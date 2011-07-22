@@ -29,7 +29,7 @@ import org.sourcepit.tools.manifest.internal.mojo.MavenProjectManifestMerger;
 /**
  * @author Bernd
  */
-public abstract class AbstractPackageTemplatesMojo extends ResourcesMojo
+public abstract class AbstractSharedResourcesMojo extends ResourcesMojo
 {
    /**
     * Set whether resources are filtered to replace tokens with parameterised values or not. The values are taken from

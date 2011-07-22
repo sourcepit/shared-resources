@@ -13,7 +13,7 @@ import java.io.File;
  * @phase process-resources
  * @requiresProject true
  */
-public class PackageTemplatesMojo extends AbstractPackageTemplatesMojo
+public class SharedResourcesMojo extends AbstractSharedResourcesMojo
 {
    /**
     * The output directory into which to copy the resources.
