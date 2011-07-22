@@ -83,8 +83,8 @@ public abstract class AbstractSharedResourcesMojo extends ResourcesMojo
             }
             saveResourceProperties();
 
-            FileUtils.copyDirectory(workingDirectory, getProcessedTemplatesDirectory());
-            FileUtils.copyDirectory(getProcessedTemplatesDirectory(), _getOutputDirectory());
+            FileUtils.copyDirectory(workingDirectory, getProcessedResourcesDirectory());
+            FileUtils.copyDirectory(getProcessedResourcesDirectory(), _getOutputDirectory());
          }
          FileUtils.deleteDirectory(workingDirectory);
 
@@ -171,7 +171,7 @@ public abstract class AbstractSharedResourcesMojo extends ResourcesMojo
       String path = getNormalizedTargetPath();
       path += "resources.properties";
 
-      final File propsFile = new File(getProcessedTemplatesDirectory(), path);
+      final File propsFile = new File(getProcessedResourcesDirectory(), path);
       if (!propsFile.exists())
       {
          propsFile.getParentFile().mkdirs();
@@ -222,7 +222,7 @@ public abstract class AbstractSharedResourcesMojo extends ResourcesMojo
       if (resources == null)
       {
          final Resource resource = new Resource();
-         resource.setDirectory(getTemplatesDirectory().getAbsolutePath());
+         resource.setDirectory(getResourcesDirectory().getAbsolutePath());
          resource.setTargetPath(getTargetPath());
          resource.setFiltering(filtering);
          resources = new ArrayList<Resource>();
@@ -231,13 +231,13 @@ public abstract class AbstractSharedResourcesMojo extends ResourcesMojo
       return resources;
    }
 
-   public abstract File getTemplatesDirectory();
+   public abstract File getResourcesDirectory();
 
-   public abstract void setTemplatesDirectory(File templatesDirectory);
+   public abstract void setResourcesDirectory(File templatesDirectory);
 
-   public abstract File getProcessedTemplatesDirectory();
+   public abstract File getProcessedResourcesDirectory();
 
-   public abstract void setProcessedTemplatesDirectory(File processedTemplatesDirectory);
+   public abstract void setProcessedResourcesDirectory(File processedTemplatesDirectory);
 
    public abstract String getTargetPath();
 

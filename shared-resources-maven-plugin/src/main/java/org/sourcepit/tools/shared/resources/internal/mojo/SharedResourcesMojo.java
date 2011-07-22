@@ -24,23 +24,23 @@ public class SharedResourcesMojo extends AbstractSharedResourcesMojo
    private File outputDirectory;
 
    /**
-    * The working directory under which the mojo copies, filters amd archives the templates.
+    * Directory which is containing the resources that should be shared among projects
     * 
-    * @parameter default-value="${basedir}/src/main/templates"
+    * @parameter default-value="${basedir}/src/main/shared-resources"
     * @required
     */
-   private File templatesDirectory;
+   private File resourcesDirectory;
 
    /**
-    * The working directory under which the mojo copies, filters amd archives the templates.
+    * The mojos working directory.
     * 
-    * @parameter default-value="${project.build.directory}/generated-resources/templates/"
+    * @parameter default-value="${project.build.directory}/generated-resources/shared-resources/"
     * @required
     */
-   private File processedTemplatesDirectory;
+   private File processedResourcesDirectory;
 
    /**
-    * Path of the directory under which the templates will appear in the final build artifact.
+    * Path of the directory under which the resources will appear in the final build artifact.
     * 
     * @parameter default-value="META-INF/shared-resources/${project.groupId}/${project.artifactId}"
     */
@@ -62,24 +62,24 @@ public class SharedResourcesMojo extends AbstractSharedResourcesMojo
       this.outputDirectory = outputDirectory;
    }
 
-   public File getTemplatesDirectory()
+   public File getResourcesDirectory()
    {
-      return templatesDirectory;
+      return resourcesDirectory;
    }
 
-   public void setTemplatesDirectory(File templatesDirectory)
+   public void setResourcesDirectory(File resourcesDirectory)
    {
-      this.templatesDirectory = templatesDirectory;
+      this.resourcesDirectory = resourcesDirectory;
    }
 
-   public File getProcessedTemplatesDirectory()
+   public File getProcessedResourcesDirectory()
    {
-      return processedTemplatesDirectory;
+      return processedResourcesDirectory;
    }
 
-   public void setProcessedTemplatesDirectory(File processedTemplatesDirectory)
+   public void setProcessedResourcesDirectory(File processedResourcesDirectory)
    {
-      this.processedTemplatesDirectory = processedTemplatesDirectory;
+      this.processedResourcesDirectory = processedResourcesDirectory;
    }
 
    public String getTargetPath()
@@ -91,12 +91,12 @@ public class SharedResourcesMojo extends AbstractSharedResourcesMojo
    {
       this.targetPath = targetPath;
    }
-   
+
    public void setManifestFile(File manifestFile)
    {
       this.manifestFile = manifestFile;
    }
-   
+
    public File getManifestFile()
    {
       return manifestFile;
