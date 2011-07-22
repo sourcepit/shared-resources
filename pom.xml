@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.sourcepit.tools</groupId>
+		<artifactId>tools-parent</artifactId>
+		<version>1-SNAPSHOT</version>
+		<relativePath>../tools-parent</relativePath>
+	</parent>
+
+	<artifactId>resources-templating</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<scm>
+		<connection>scm:svn:${srcpit.tools.svn.trunk.url}/resources-templating</connection>
+	</scm>
+
+	<modules>
+		<module>resources-templating-maven-plugin</module>
+		<module>resources-templating-harness</module>
+	</modules>
+
+	<repositories>
+		<repository>
+			<id>srcpit-public</id>
+			<url>http://nexus.sourcepit.org/content/groups/public/</url>
+		</repository>
+	</repositories>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.sourcepit.tools</groupId>
+				<artifactId>resources-templating-harness</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.sourcepit.tools</groupId>
+					<artifactId>resources-templating-maven-plugin</artifactId>
+					<version>0.1.0-SNAPSHOT</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+</project>
