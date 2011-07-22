@@ -2,7 +2,7 @@
  * Copyright (C) 2007 Innovations Softwaretechnologie GmbH, Immenstaad, Germany. All rights reserved.
  */
 
-package org.sourcepit.tools.resources.templating.internal.harness;
+package org.sourcepit.tools.shared.resources.internal.harness;
 
 import java.io.File;
 
