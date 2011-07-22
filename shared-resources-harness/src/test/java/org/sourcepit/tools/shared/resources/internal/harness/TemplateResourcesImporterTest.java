@@ -5,11 +5,12 @@
 package org.sourcepit.tools.shared.resources.internal.harness;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.apache.commons.io.FileUtils;
-import org.sourcepit.tools.shared.resources.internal.harness.TemplateResourcesImporter;
 
 /**
  * @author Bernd
@@ -99,12 +100,20 @@ public class TemplateResourcesImporterTest extends TestCase
       assertEquals(2, ws.list().length);
 
       File[] members1 = ws.listFiles();
+      assertEquals(2, members1.length);
 
-      File file1_1 = members1[0];
+      // map name to file, because on linux we have another file ordering..
+      final Map<String, File> nameToFile = new HashMap<String, File>();
+      for (int i = 0; i < members1.length; i++)
+      {
+         nameToFile.put(members1[i].getName(), members1[i]);
+      }
+
+      File file1_1 = nameToFile.get("foo");
       assertEquals("foo", file1_1.getName());
       assertTrue(file1_1.isDirectory());
 
-      File file1_2 = members1[1];
+      File file1_2 = nameToFile.get("foo.txt");
       assertEquals("foo.txt", file1_2.getName());
       assertTrue(file1_2.isFile());
 
