@@ -216,7 +216,7 @@ public class TemplateResourcesImporter
       {
          throw new IllegalArgumentException("Path must not be null.");
       }
-      String result = path.replace(File.separatorChar, '/');
+      String result = path.replace('\\', '/');
       if (result.startsWith("/"))
       {
          if (result.length() == 1)
