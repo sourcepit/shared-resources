@@ -31,6 +31,7 @@ public class TemplateResourcesImporter
       String path = null;
 
       final String resourcesPath = normalizeTemplateResourcesPath(templateResourcesPath);
+      System.out.println(resourcesPath);
       final int segmentLength = resourcesPath.indexOf('/');
       if (segmentLength > -1)
       {
