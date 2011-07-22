@@ -9,6 +9,7 @@ import java.io.File;
 import junit.framework.TestCase;
 
 import org.apache.commons.io.FileUtils;
+import org.sourcepit.tools.shared.resources.internal.harness.TemplateResourcesImporter;
 
 /**
  * @author Bernd

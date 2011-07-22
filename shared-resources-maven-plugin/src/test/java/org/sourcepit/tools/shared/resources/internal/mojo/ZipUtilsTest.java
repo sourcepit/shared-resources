@@ -2,7 +2,7 @@
  * Copyright (C) 2011 Bosch Software Innovations GmbH. All rights reserved.
  */
 
-package org.sourcepit.tools.resources.templating.internal.mojo;
+package org.sourcepit.tools.shared.resources.internal.mojo;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.sourcepit.tools.resources.templating.internal.mojo.ZipUtils;
+import org.sourcepit.tools.shared.resources.internal.mojo.ZipUtils;
 
 public class ZipUtilsTest extends TestCase
 {

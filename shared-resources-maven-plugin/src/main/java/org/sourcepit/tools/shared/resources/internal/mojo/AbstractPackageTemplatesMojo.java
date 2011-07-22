@@ -2,7 +2,7 @@
  * Copyright (C) 2011 Bosch Software Innovations GmbH. All rights reserved.
  */
 
-package org.sourcepit.tools.resources.templating.internal.mojo;
+package org.sourcepit.tools.shared.resources.internal.mojo;
 
 import java.io.File;
 import java.io.FileInputStream;
