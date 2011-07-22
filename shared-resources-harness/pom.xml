@@ -42,7 +42,7 @@
 				<executions>
 					<execution>
 						<goals>
-							<goal>package-test-templates</goal>
+							<goal>share-test-resources</goal>
 						</goals>
 					</execution>
 				</executions>
