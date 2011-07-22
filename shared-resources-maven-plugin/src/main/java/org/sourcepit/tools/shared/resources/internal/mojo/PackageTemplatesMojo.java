@@ -9,7 +9,7 @@ import java.io.File;
 /**
  * @extendsPlugin resources
  * @extendsGoal resources
- * @goal package-templates
+ * @goal share-resources
  * @phase process-resources
  * @requiresProject true
  */
