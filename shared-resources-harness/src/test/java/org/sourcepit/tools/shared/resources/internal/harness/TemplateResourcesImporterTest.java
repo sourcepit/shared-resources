@@ -134,15 +134,22 @@ public class TemplateResourcesImporterTest extends TestCase
       File file1 = ws.listFiles()[0];
       assertEquals("täst", file1.getName());
       assertTrue(file1.isDirectory());
-
+      
       File[] members1 = file1.listFiles();
       assertEquals(2, members1.length);
 
-      File file1_1 = members1[0];
+      // map name to file, because on linux we have another file ordering..
+      final Map<String, File> nameToFile = new HashMap<String, File>();
+      for (int i = 0; i < members1.length; i++)
+      {
+         nameToFile.put(members1[i].getName(), members1[i]);
+      }
+
+      File file1_1 = nameToFile.get("foo");
       assertEquals("foo", file1_1.getName());
       assertTrue(file1_1.isDirectory());
 
-      File file1_2 = members1[1];
+      File file1_2 = nameToFile.get("foo.txt");
       assertEquals("foo.txt", file1_2.getName());
       assertTrue(file1_2.isFile());
 
