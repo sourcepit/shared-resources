@@ -78,7 +78,6 @@ public class TemplateResourcesImporterTest extends TestCase
 
    public void testImportFile() throws Exception
    {
-      System.out.println(getName());
       new TemplateResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
          "täst.txt", ws, false);
       assertEquals(1, ws.list().length);
