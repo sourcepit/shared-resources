@@ -42,7 +42,7 @@ public class ShareTestResourcesMojo extends AbstractSharedResourcesMojo
    /**
     * Path of the directory under which the resources will appear in the final build artifact.
     * 
-    * @parameter default-value="META-INF/shared-test-resources/${project.groupId}/${project.artifactId}"
+    * @parameter default-value="META-INF/shared-test-resources"
     */
    private String targetPath;
 

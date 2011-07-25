@@ -17,7 +17,7 @@ import org.apache.commons.io.FileUtils;
  */
 public class TemplateResourcesImporterTest extends TestCase
 {
-   private static final String SHARED_RESOURCES_LOCATION = "META-INF/shared-test-resources/org.sourcepit.tools/shared-resources-harness";
+   private static final String SHARED_RESOURCES_LOCATION = "META-INF/shared-test-resources/";
    private File ws;
 
    @Override
@@ -133,7 +133,7 @@ public class TemplateResourcesImporterTest extends TestCase
       File file1 = ws.listFiles()[0];
       assertEquals("täst", file1.getName());
       assertTrue(file1.isDirectory());
-      
+
       File[] members1 = file1.listFiles();
       assertEquals(2, members1.length);
 
