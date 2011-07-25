@@ -10,20 +10,19 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.io.FileUtils;
-
 /**
  * @author Bernd
  */
-public class TemplateResourcesImporterTest extends TestCase
+public class ResourcesImporterTest extends TestCase
 {
    private static final String SHARED_RESOURCES_LOCATION = "META-INF/shared-test-resources/";
-   private File ws;
+
+   private MavenTestWorkspace ws = new MavenTestWorkspace(this, true);
 
    @Override
    protected void setUp() throws Exception
    {
-      ws = resetWs();
+      ws.startUp();
       super.setUp();
    }
 
@@ -31,74 +30,74 @@ public class TemplateResourcesImporterTest extends TestCase
    protected void tearDown() throws Exception
    {
       super.tearDown();
-      deleteWs();
+      ws.tearDown();
    }
 
    public void testNormalizeTemplateResourcesPath() throws Exception
    {
       try
       {
-         TemplateResourcesImporter.normalizeTemplateResourcesPath(null);
+         ResourcesImporter.normalizeResourcesPath(null);
          fail();
       }
       catch (IllegalArgumentException e)
       {
       }
-      assertEquals("", TemplateResourcesImporter.normalizeTemplateResourcesPath("/"));
-      assertEquals("project.zip", TemplateResourcesImporter.normalizeTemplateResourcesPath("\\project.zip"));
-      assertEquals("project.zip", TemplateResourcesImporter.normalizeTemplateResourcesPath("/project.zip"));
-      assertEquals("projects/tests", TemplateResourcesImporter.normalizeTemplateResourcesPath("projects\\tests\\"));
-      assertEquals("projects/tests", TemplateResourcesImporter.normalizeTemplateResourcesPath("projects/tests/"));
-      assertEquals("projects/tests", TemplateResourcesImporter.normalizeTemplateResourcesPath("\\projects\\tests\\"));
-      assertEquals("projects/tests", TemplateResourcesImporter.normalizeTemplateResourcesPath("/projects/tests/"));
+      assertEquals("", ResourcesImporter.normalizeResourcesPath("/"));
+      assertEquals("project.zip", ResourcesImporter.normalizeResourcesPath("\\project.zip"));
+      assertEquals("project.zip", ResourcesImporter.normalizeResourcesPath("/project.zip"));
+      assertEquals("projects/tests", ResourcesImporter.normalizeResourcesPath("projects\\tests\\"));
+      assertEquals("projects/tests", ResourcesImporter.normalizeResourcesPath("projects/tests/"));
+      assertEquals("projects/tests", ResourcesImporter.normalizeResourcesPath("\\projects\\tests\\"));
+      assertEquals("projects/tests", ResourcesImporter.normalizeResourcesPath("/projects/tests/"));
    }
 
    public void testCreateFullTemplateResourcesPath() throws Exception
    {
       try
       {
-         TemplateResourcesImporter.createFullTemplateResourcesPath("", null);
+         ResourcesImporter.createFullResourcesPath("", null);
          fail();
       }
       catch (IllegalArgumentException e)
       {
       }
 
-      assertEquals("project.zip", TemplateResourcesImporter.createFullTemplateResourcesPath(null, "project.zip"));
-      assertEquals("project.zip", TemplateResourcesImporter.createFullTemplateResourcesPath("\\", "project.zip"));
-      assertEquals("project.zip", TemplateResourcesImporter.createFullTemplateResourcesPath("\\", "/project.zip"));
-      assertEquals("test/project.zip", TemplateResourcesImporter.createFullTemplateResourcesPath("test", "project.zip"));
+      assertEquals("project.zip", ResourcesImporter.createFullResourcesPath(null, "project.zip"));
+      assertEquals("project.zip", ResourcesImporter.createFullResourcesPath("\\", "project.zip"));
+      assertEquals("project.zip", ResourcesImporter.createFullResourcesPath("\\", "/project.zip"));
+      assertEquals("test/project.zip", ResourcesImporter.createFullResourcesPath("test", "project.zip"));
       assertEquals("test/project.zip",
-         TemplateResourcesImporter.createFullTemplateResourcesPath("test", "/project.zip"));
+         ResourcesImporter.createFullResourcesPath("test", "/project.zip"));
       assertEquals("test/foo/project.zip",
-         TemplateResourcesImporter.createFullTemplateResourcesPath("test", "foo/project.zip"));
+         ResourcesImporter.createFullResourcesPath("test", "foo/project.zip"));
       assertEquals("test/foo/project.zip",
-         TemplateResourcesImporter.createFullTemplateResourcesPath("test", "/foo/project.zip"));
+         ResourcesImporter.createFullResourcesPath("test", "/foo/project.zip"));
    }
 
    public void testImportFile() throws Exception
    {
-      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
-         "täst.txt", ws, false);
-      assertEquals(1, ws.list().length);
-      assertEquals("täst.txt", ws.list()[0]);
+      new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
+         "täst.txt", ws.getWs(), false);
+      assertEquals(1, ws.getWs().list().length);
+      assertEquals("täst.txt", ws.getWs().list()[0]);
    }
 
    public void testImportFile_keepArchivePaths() throws Exception
    {
-      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
-         "täst.txt", ws, true);
-      assertEquals(1, ws.list().length);
-      assertEquals("täst.txt", ws.list()[0]);
+      new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
+         "täst.txt", ws.getWs(), true);
+      assertEquals(1, ws.getWs().list().length);
+      assertEquals("täst.txt", ws.getWs().list()[0]);
    }
 
    public void testImportArchive() throws Exception
    {
-      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst",
-         ws, false);
-      assertEquals(2, ws.list().length);
+      new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst",
+         ws.getWs(), false);
+      assertEquals(2, ws.getWs().list().length);
 
-      File[] members1 = ws.listFiles();
+      File[] members1 = ws.getWs().listFiles();
       assertEquals(2, members1.length);
 
       // map name to file, because on linux we have another file ordering..
@@ -126,11 +125,11 @@ public class TemplateResourcesImporterTest extends TestCase
 
    public void testImportArchive_keepArchivePaths() throws Exception
    {
-      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst",
-         ws, true);
-      assertEquals(1, ws.list().length);
+      new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst",
+         ws.getWs(), true);
+      assertEquals(1, ws.getWs().list().length);
 
-      File file1 = ws.listFiles()[0];
+      File file1 = ws.getWs().listFiles()[0];
       assertEquals("täst", file1.getName());
       assertTrue(file1.isDirectory());
 
@@ -162,22 +161,22 @@ public class TemplateResourcesImporterTest extends TestCase
 
    public void testImportFileInArchive() throws Exception
    {
-      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
-         "täst/foo.txt", ws, false);
-      assertEquals(1, ws.list().length);
+      new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
+         "täst/foo.txt", ws.getWs(), false);
+      assertEquals(1, ws.getWs().list().length);
 
-      File file1 = ws.listFiles()[0];
+      File file1 = ws.getWs().listFiles()[0];
       assertEquals("foo.txt", file1.getName());
       assertTrue(file1.isFile());
    }
 
    public void testImportFileInArchive_keepArchivePaths() throws Exception
    {
-      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
-         "täst/foo.txt", ws, true);
-      assertEquals(1, ws.list().length);
+      new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
+         "täst/foo.txt", ws.getWs(), true);
+      assertEquals(1, ws.getWs().list().length);
 
-      File file1 = ws.listFiles()[0];
+      File file1 = ws.getWs().listFiles()[0];
       assertEquals("täst", file1.getName());
       assertTrue(file1.isDirectory());
 
@@ -191,22 +190,22 @@ public class TemplateResourcesImporterTest extends TestCase
 
    public void testImportDirInArchive() throws Exception
    {
-      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
-         "täst/foo", ws, false);
-      assertEquals(1, ws.list().length);
+      new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
+         "täst/foo", ws.getWs(), false);
+      assertEquals(1, ws.getWs().list().length);
 
-      File file1 = ws.listFiles()[0];
+      File file1 = ws.getWs().listFiles()[0];
       assertEquals("bär.txt", file1.getName());
       assertTrue(file1.isFile());
    }
 
    public void testImportDirInArchive_keepArchivePaths() throws Exception
    {
-      new TemplateResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
-         "täst/foo", ws, true);
-      assertEquals(1, ws.list().length);
+      new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
+         "täst/foo", ws.getWs(), true);
+      assertEquals(1, ws.getWs().list().length);
 
-      File file1 = ws.listFiles()[0];
+      File file1 = ws.getWs().listFiles()[0];
       assertEquals("täst", file1.getName());
       assertTrue(file1.isDirectory());
 
@@ -223,24 +222,5 @@ public class TemplateResourcesImporterTest extends TestCase
       File file1_1_1 = members1_1[0];
       assertEquals("bär.txt", file1_1_1.getName());
       assertTrue(file1_1_1.isFile());
-   }
-
-   private static File resetWs()
-   {
-      final File ws = deleteWs();
-      ws.mkdirs();
-      assertTrue(ws.exists());
-      assertEquals(0, ws.list().length);
-      return ws;
-   }
-
-   private static File deleteWs()
-   {
-      final File ws = new File("target/test-resources");
-      if (ws.exists())
-      {
-         assertTrue(FileUtils.deleteQuietly(ws));
-      }
-      return ws;
    }
 }

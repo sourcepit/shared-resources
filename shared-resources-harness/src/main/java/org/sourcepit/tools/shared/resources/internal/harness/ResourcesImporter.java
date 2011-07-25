@@ -19,7 +19,7 @@ import org.apache.commons.io.IOUtils;
 /**
  * @author Bernd
  */
-public class TemplateResourcesImporter
+public class ResourcesImporter
 {
    public void importResources(ClassLoader classLoader, String templatesLocation, String templateResourcesPath,
       File targetDir, boolean keepArchivePaths) throws FileNotFoundException, IOException
@@ -30,7 +30,7 @@ public class TemplateResourcesImporter
       String archiveName = null;
       String path = null;
 
-      final String resourcesPath = normalizeTemplateResourcesPath(templateResourcesPath);
+      final String resourcesPath = normalizeResourcesPath(templateResourcesPath);
       final int segmentLength = resourcesPath.indexOf('/');
       if (segmentLength > -1)
       {
@@ -62,11 +62,11 @@ public class TemplateResourcesImporter
 
       if (archiveName == null)
       {
-         importFile(classLoader, createFullTemplateResourcesPath(templatesLocation, path), path, targetDir);
+         importFile(classLoader, createFullResourcesPath(templatesLocation, path), path, targetDir);
       }
       else
       {
-         importArchive(classLoader, createFullTemplateResourcesPath(templatesLocation, archiveName), path,
+         importArchive(classLoader, createFullResourcesPath(templatesLocation, archiveName), path,
             archiveName.substring(0, archiveName.length() - 4), encoding, targetDir, keepArchivePaths);
       }
    }
@@ -175,7 +175,7 @@ public class TemplateResourcesImporter
    private Properties loadResourcesProperties(ClassLoader classLoader, String templatesLocation)
    {
       final Properties resourceProperties = new Properties();
-      final InputStream in = classLoader.getResourceAsStream(createFullTemplateResourcesPath(templatesLocation,
+      final InputStream in = classLoader.getResourceAsStream(createFullResourcesPath(templatesLocation,
          "resources.properties"));
       try
       {
@@ -195,22 +195,22 @@ public class TemplateResourcesImporter
       return resourceProperties;
    }
 
-   protected static String createFullTemplateResourcesPath(String templatesLocation, String templateResourcesPath)
+   protected static String createFullResourcesPath(String templatesLocation, String templateResourcesPath)
    {
       final StringBuilder sb = new StringBuilder();
       if (templatesLocation != null)
       {
-         sb.append(normalizeTemplateResourcesPath(templatesLocation));
+         sb.append(normalizeResourcesPath(templatesLocation));
       }
       if (sb.length() > 0 && sb.charAt(sb.length() - 1) != '/')
       {
          sb.append('/');
       }
-      sb.append(normalizeTemplateResourcesPath(templateResourcesPath));
+      sb.append(normalizeResourcesPath(templateResourcesPath));
       return sb.toString();
    }
 
-   protected static String normalizeTemplateResourcesPath(final String path)
+   protected static String normalizeResourcesPath(final String path)
    {
       if (path == null)
       {
