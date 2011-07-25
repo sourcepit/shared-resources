@@ -78,26 +78,26 @@ public class ResourcesImporterTest extends TestCase
    public void testImportFile() throws Exception
    {
       new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
-         "täst.txt", ws.getWs(), false);
-      assertEquals(1, ws.getWs().list().length);
-      assertEquals("täst.txt", ws.getWs().list()[0]);
+         "täst.txt", ws.getDir(), false);
+      assertEquals(1, ws.getDir().list().length);
+      assertEquals("täst.txt", ws.getDir().list()[0]);
    }
 
    public void testImportFile_keepArchivePaths() throws Exception
    {
       new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
-         "täst.txt", ws.getWs(), true);
-      assertEquals(1, ws.getWs().list().length);
-      assertEquals("täst.txt", ws.getWs().list()[0]);
+         "täst.txt", ws.getDir(), true);
+      assertEquals(1, ws.getDir().list().length);
+      assertEquals("täst.txt", ws.getDir().list()[0]);
    }
 
    public void testImportArchive() throws Exception
    {
       new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst",
-         ws.getWs(), false);
-      assertEquals(2, ws.getWs().list().length);
+         ws.getDir(), false);
+      assertEquals(2, ws.getDir().list().length);
 
-      File[] members1 = ws.getWs().listFiles();
+      File[] members1 = ws.getDir().listFiles();
       assertEquals(2, members1.length);
 
       // map name to file, because on linux we have another file ordering..
@@ -126,10 +126,10 @@ public class ResourcesImporterTest extends TestCase
    public void testImportArchive_keepArchivePaths() throws Exception
    {
       new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst",
-         ws.getWs(), true);
-      assertEquals(1, ws.getWs().list().length);
+         ws.getDir(), true);
+      assertEquals(1, ws.getDir().list().length);
 
-      File file1 = ws.getWs().listFiles()[0];
+      File file1 = ws.getDir().listFiles()[0];
       assertEquals("täst", file1.getName());
       assertTrue(file1.isDirectory());
 
@@ -162,10 +162,10 @@ public class ResourcesImporterTest extends TestCase
    public void testImportFileInArchive() throws Exception
    {
       new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
-         "täst/foo.txt", ws.getWs(), false);
-      assertEquals(1, ws.getWs().list().length);
+         "täst/foo.txt", ws.getDir(), false);
+      assertEquals(1, ws.getDir().list().length);
 
-      File file1 = ws.getWs().listFiles()[0];
+      File file1 = ws.getDir().listFiles()[0];
       assertEquals("foo.txt", file1.getName());
       assertTrue(file1.isFile());
    }
@@ -173,10 +173,10 @@ public class ResourcesImporterTest extends TestCase
    public void testImportFileInArchive_keepArchivePaths() throws Exception
    {
       new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
-         "täst/foo.txt", ws.getWs(), true);
-      assertEquals(1, ws.getWs().list().length);
+         "täst/foo.txt", ws.getDir(), true);
+      assertEquals(1, ws.getDir().list().length);
 
-      File file1 = ws.getWs().listFiles()[0];
+      File file1 = ws.getDir().listFiles()[0];
       assertEquals("täst", file1.getName());
       assertTrue(file1.isDirectory());
 
@@ -191,10 +191,10 @@ public class ResourcesImporterTest extends TestCase
    public void testImportDirInArchive() throws Exception
    {
       new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
-         "täst/foo", ws.getWs(), false);
-      assertEquals(1, ws.getWs().list().length);
+         "täst/foo", ws.getDir(), false);
+      assertEquals(1, ws.getDir().list().length);
 
-      File file1 = ws.getWs().listFiles()[0];
+      File file1 = ws.getDir().listFiles()[0];
       assertEquals("bär.txt", file1.getName());
       assertTrue(file1.isFile());
    }
@@ -202,10 +202,10 @@ public class ResourcesImporterTest extends TestCase
    public void testImportDirInArchive_keepArchivePaths() throws Exception
    {
       new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
-         "täst/foo", ws.getWs(), true);
-      assertEquals(1, ws.getWs().list().length);
+         "täst/foo", ws.getDir(), true);
+      assertEquals(1, ws.getDir().list().length);
 
-      File file1 = ws.getWs().listFiles()[0];
+      File file1 = ws.getDir().listFiles()[0];
       assertEquals("täst", file1.getName());
       assertTrue(file1.isDirectory());
 

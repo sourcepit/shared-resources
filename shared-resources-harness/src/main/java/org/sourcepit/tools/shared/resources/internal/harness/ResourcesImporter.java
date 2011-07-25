@@ -104,7 +104,8 @@ public class ResourcesImporter
       while (entry != null)
       {
          final String entryName = entry.getName();
-         if (archiveEntry == null || entryName.equals(archiveEntry) || entryName.startsWith(archiveEntry + "/"))
+         if (archiveEntry == null || entryName.equals(archiveEntry) || entryName.startsWith(archiveEntry + "/")
+            || (keepArchivePaths && entry.isDirectory() && archiveEntry.startsWith(entryName)))
          {
             final String fileName;
 

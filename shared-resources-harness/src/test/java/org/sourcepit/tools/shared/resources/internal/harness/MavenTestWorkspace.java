@@ -5,6 +5,7 @@
 package org.sourcepit.tools.shared.resources.internal.harness;
 
 import java.io.File;
+import java.io.IOException;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -16,6 +17,7 @@ public class MavenTestWorkspace
    private final TestCase testCase;
    private final boolean deleteOnTearDown;
    private File ws;
+   private String sharedResourcesLocation = "META-INF/shared-resources";
 
    public MavenTestWorkspace(TestCase testCase, boolean deleteOnTearDown)
    {
@@ -23,7 +25,12 @@ public class MavenTestWorkspace
       this.deleteOnTearDown = deleteOnTearDown;
    }
 
-   public File getWs()
+   public void setSharedResourcesLocation(String sharedResourcesLocation)
+   {
+      this.sharedResourcesLocation = sharedResourcesLocation;
+   }
+
+   public File getDir()
    {
       return ws;
    }
@@ -34,6 +41,29 @@ public class MavenTestWorkspace
       ws.mkdirs();
       Assert.assertTrue(ws.exists());
       Assert.assertEquals(0, ws.list().length);
+   }
+
+   public File importResources(String path) throws IOException
+   {
+      return importResources(path, null);
+   }
+
+   public File importResources(String sourcePath, String targetPath) throws IOException
+   {
+      File outDir;
+      if (targetPath == null)
+      {
+         outDir = getDir();
+      }
+      else
+      {
+         outDir = new File(getDir(), targetPath);
+         outDir.mkdirs();
+      }
+      ResourcesImporter importer = new ResourcesImporter();
+      importer
+         .importResources(testCase.getClass().getClassLoader(), sharedResourcesLocation, sourcePath, outDir, false);
+      return outDir;
    }
 
    protected File create()
