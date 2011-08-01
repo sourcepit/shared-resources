@@ -60,9 +60,8 @@ public class MavenTestWorkspace
          outDir = new File(getDir(), targetPath);
          outDir.mkdirs();
       }
-      ResourcesImporter importer = new ResourcesImporter();
-      importer
-         .importResources(testCase.getClass().getClassLoader(), sharedResourcesLocation, sourcePath, outDir, false);
+      SharedResourcesUtils.copy(testCase.getClass().getClassLoader(), sharedResourcesLocation, sourcePath,
+         outDir, false, null);
       return outDir;
    }
 

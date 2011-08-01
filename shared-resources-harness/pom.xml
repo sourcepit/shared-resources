@@ -8,6 +8,18 @@
 	</parent>
 	<artifactId>shared-resources-harness</artifactId>
 	<dependencies>
+
+		<dependency>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-interpolation</artifactId>
+			<version>1.14</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-utils</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>

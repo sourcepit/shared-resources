@@ -5,15 +5,21 @@
 package org.sourcepit.tools.shared.resources.internal.harness;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+
+import org.codehaus.plexus.interpolation.ValueSource;
+import org.sourcepit.tools.shared.resources.harness.ValueSourceUtils;
 
 import junit.framework.TestCase;
 
 /**
  * @author Bernd
  */
-public class ResourcesImporterTest extends TestCase
+public class SharedResourcesUtilsTest extends TestCase
 {
    private static final String SHARED_RESOURCES_LOCATION = "META-INF/shared-test-resources/";
 
@@ -37,64 +43,61 @@ public class ResourcesImporterTest extends TestCase
    {
       try
       {
-         ResourcesImporter.normalizeResourcesPath(null);
+         SharedResourcesUtils.normalizeResourcesPath(null);
          fail();
       }
       catch (IllegalArgumentException e)
       {
       }
-      assertEquals("", ResourcesImporter.normalizeResourcesPath("/"));
-      assertEquals("project.zip", ResourcesImporter.normalizeResourcesPath("\\project.zip"));
-      assertEquals("project.zip", ResourcesImporter.normalizeResourcesPath("/project.zip"));
-      assertEquals("projects/tests", ResourcesImporter.normalizeResourcesPath("projects\\tests\\"));
-      assertEquals("projects/tests", ResourcesImporter.normalizeResourcesPath("projects/tests/"));
-      assertEquals("projects/tests", ResourcesImporter.normalizeResourcesPath("\\projects\\tests\\"));
-      assertEquals("projects/tests", ResourcesImporter.normalizeResourcesPath("/projects/tests/"));
+      assertEquals("", SharedResourcesUtils.normalizeResourcesPath("/"));
+      assertEquals("project.zip", SharedResourcesUtils.normalizeResourcesPath("\\project.zip"));
+      assertEquals("project.zip", SharedResourcesUtils.normalizeResourcesPath("/project.zip"));
+      assertEquals("projects/tests", SharedResourcesUtils.normalizeResourcesPath("projects\\tests\\"));
+      assertEquals("projects/tests", SharedResourcesUtils.normalizeResourcesPath("projects/tests/"));
+      assertEquals("projects/tests", SharedResourcesUtils.normalizeResourcesPath("\\projects\\tests\\"));
+      assertEquals("projects/tests", SharedResourcesUtils.normalizeResourcesPath("/projects/tests/"));
    }
 
    public void testCreateFullTemplateResourcesPath() throws Exception
    {
       try
       {
-         ResourcesImporter.createFullResourcesPath("", null);
+         SharedResourcesUtils.createFullResourcesPath("", null);
          fail();
       }
       catch (IllegalArgumentException e)
       {
       }
 
-      assertEquals("project.zip", ResourcesImporter.createFullResourcesPath(null, "project.zip"));
-      assertEquals("project.zip", ResourcesImporter.createFullResourcesPath("\\", "project.zip"));
-      assertEquals("project.zip", ResourcesImporter.createFullResourcesPath("\\", "/project.zip"));
-      assertEquals("test/project.zip", ResourcesImporter.createFullResourcesPath("test", "project.zip"));
-      assertEquals("test/project.zip",
-         ResourcesImporter.createFullResourcesPath("test", "/project.zip"));
-      assertEquals("test/foo/project.zip",
-         ResourcesImporter.createFullResourcesPath("test", "foo/project.zip"));
-      assertEquals("test/foo/project.zip",
-         ResourcesImporter.createFullResourcesPath("test", "/foo/project.zip"));
+      assertEquals("project.zip", SharedResourcesUtils.createFullResourcesPath(null, "project.zip"));
+      assertEquals("project.zip", SharedResourcesUtils.createFullResourcesPath("\\", "project.zip"));
+      assertEquals("project.zip", SharedResourcesUtils.createFullResourcesPath("\\", "/project.zip"));
+      assertEquals("test/project.zip", SharedResourcesUtils.createFullResourcesPath("test", "project.zip"));
+      assertEquals("test/project.zip", SharedResourcesUtils.createFullResourcesPath("test", "/project.zip"));
+      assertEquals("test/foo/project.zip", SharedResourcesUtils.createFullResourcesPath("test", "foo/project.zip"));
+      assertEquals("test/foo/project.zip", SharedResourcesUtils.createFullResourcesPath("test", "/foo/project.zip"));
    }
 
    public void testImportFile() throws Exception
    {
-      new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
-         "täst.txt", ws.getDir(), false);
+      SharedResourcesUtils.copy(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst.txt", ws.getDir(), false,
+         null);
       assertEquals(1, ws.getDir().list().length);
       assertEquals("täst.txt", ws.getDir().list()[0]);
    }
 
    public void testImportFile_keepArchivePaths() throws Exception
    {
-      new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
-         "täst.txt", ws.getDir(), true);
+      SharedResourcesUtils.copy(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst.txt", ws.getDir(), true,
+         null);
       assertEquals(1, ws.getDir().list().length);
       assertEquals("täst.txt", ws.getDir().list()[0]);
    }
 
    public void testImportArchive() throws Exception
    {
-      new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst",
-         ws.getDir(), false);
+      SharedResourcesUtils.copy(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst", ws.getDir(), false,
+         null);
       assertEquals(2, ws.getDir().list().length);
 
       File[] members1 = ws.getDir().listFiles();
@@ -125,8 +128,8 @@ public class ResourcesImporterTest extends TestCase
 
    public void testImportArchive_keepArchivePaths() throws Exception
    {
-      new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst",
-         ws.getDir(), true);
+      SharedResourcesUtils
+         .copy(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst", ws.getDir(), true, null);
       assertEquals(1, ws.getDir().list().length);
 
       File file1 = ws.getDir().listFiles()[0];
@@ -161,19 +164,22 @@ public class ResourcesImporterTest extends TestCase
 
    public void testImportFileInArchive() throws Exception
    {
-      new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
-         "täst/foo.txt", ws.getDir(), false);
+      SharedResourcesUtils.copy(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst/foo.txt", ws.getDir(),
+         false, null);
       assertEquals(1, ws.getDir().list().length);
 
       File file1 = ws.getDir().listFiles()[0];
       assertEquals("foo.txt", file1.getName());
       assertTrue(file1.isFile());
+      
+      SharedResourcesUtils.copy(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst/foo/bär.txt", ws.getDir(),
+         false, null);
    }
 
    public void testImportFileInArchive_keepArchivePaths() throws Exception
    {
-      new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
-         "täst/foo.txt", ws.getDir(), true);
+      SharedResourcesUtils.copy(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst/foo.txt", ws.getDir(),
+         true, null);
       assertEquals(1, ws.getDir().list().length);
 
       File file1 = ws.getDir().listFiles()[0];
@@ -190,8 +196,8 @@ public class ResourcesImporterTest extends TestCase
 
    public void testImportDirInArchive() throws Exception
    {
-      new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
-         "täst/foo", ws.getDir(), false);
+      SharedResourcesUtils.copy(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst/foo", ws.getDir(), false,
+         null);
       assertEquals(1, ws.getDir().list().length);
 
       File file1 = ws.getDir().listFiles()[0];
@@ -201,8 +207,8 @@ public class ResourcesImporterTest extends TestCase
 
    public void testImportDirInArchive_keepArchivePaths() throws Exception
    {
-      new ResourcesImporter().importResources(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION,
-         "täst/foo", ws.getDir(), true);
+      SharedResourcesUtils.copy(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst/foo", ws.getDir(), true,
+         null);
       assertEquals(1, ws.getDir().list().length);
 
       File file1 = ws.getDir().listFiles()[0];
@@ -222,5 +228,21 @@ public class ResourcesImporterTest extends TestCase
       File file1_1_1 = members1_1[0];
       assertEquals("bär.txt", file1_1_1.getName());
       assertTrue(file1_1_1.isFile());
+   }
+
+   public void testGetPossiblePrefixes() throws Exception
+   {
+      ValueSource source = ValueSourceUtils.newPropertyValueSource(new Properties());
+      List<String> actualPrefixes = SharedResourcesUtils.getPossiblePrefixes(source);
+      assertNull(actualPrefixes);
+
+      List<String> prefixes = new ArrayList<String>();
+      prefixes.add("pom");
+      prefixes.add("project");
+
+      source = ValueSourceUtils.newPrefixedValueSource(prefixes, new Object());
+
+      actualPrefixes = SharedResourcesUtils.getPossiblePrefixes(source);
+      assertEquals(prefixes, actualPrefixes);
    }
 }
