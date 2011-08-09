@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,12 +17,10 @@ import java.util.List;
 import java.util.jar.Manifest;
 
 import org.apache.commons.io.IOUtils;
-import org.codehaus.plexus.interpolation.ValueSource;
-import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.FileUtils.FilterWrapper;
 import org.sourcepit.tools.shared.resources.internal.harness.SharedResourcesUtils;
 
-public class SharedResourcesCopier
+public class SharedResourcesCopier extends AbstractPropertyInterpolator
 {
    private String manifestHeader = "Shared-Resources";
 
@@ -31,13 +28,15 @@ public class SharedResourcesCopier
 
    private boolean filter = false;
 
-   private LinkedHashSet<String> delimiters;
+   public boolean isFilter()
+   {
+      return filter;
+   }
 
-   private Collection<ValueSource> valueSources;
-
-   private String escapeString;
-
-   private boolean escapeWindowsPaths = true;
+   public void setFilter(boolean filter)
+   {
+      this.filter = filter;
+   }
 
    public void setClassLoader(ClassLoader classLoader)
    {
@@ -57,56 +56,6 @@ public class SharedResourcesCopier
    public String getManifestHeader()
    {
       return manifestHeader;
-   }
-
-   public boolean isFilter()
-   {
-      return filter;
-   }
-
-   public void setFilter(boolean filter)
-   {
-      this.filter = filter;
-   }
-
-   public LinkedHashSet<String> getDelimiters()
-   {
-      if (delimiters == null)
-      {
-         delimiters = new LinkedHashSet<String>();
-         delimiters.add("${*}");
-         delimiters.add("@");
-      }
-      return delimiters;
-   }
-
-   public Collection<ValueSource> getValueSources()
-   {
-      if (valueSources == null)
-      {
-         valueSources = new ArrayList<ValueSource>();
-      }
-      return valueSources;
-   }
-
-   public String getEscapeString()
-   {
-      return escapeString;
-   }
-
-   public void setEscapeString(String escapeString)
-   {
-      this.escapeString = escapeString;
-   }
-
-   public boolean isEscapeWindowsPaths()
-   {
-      return escapeWindowsPaths;
-   }
-
-   public void setEscapeWindowsPaths(boolean escapeWindowsPaths)
-   {
-      this.escapeWindowsPaths = escapeWindowsPaths;
    }
 
    public void copy(String resourcePath, File targetDir) throws IOException
@@ -134,7 +83,7 @@ public class SharedResourcesCopier
          }
       }
 
-      final FilterWrapper filterWrapper = filter ? newFilterWrapper() : null;
+      final FilterWrapper filterWrapper = isFilter() ? newFilterWrapper() : null;
 
       final List<IOException> ioException = new ArrayList<IOException>();
 
@@ -157,18 +106,5 @@ public class SharedResourcesCopier
       }
 
       throw new FileNotFoundException(resourcePath);
-   }
-
-   private FilterWrapper newFilterWrapper()
-   {
-      return new FileUtils.FilterWrapper()
-      {
-         @Override
-         public Reader getReader(Reader reader)
-         {
-            return SharedResourcesUtils.createFilterReader(reader, getDelimiters(), getValueSources(),
-               getEscapeString(), isEscapeWindowsPaths());
-         }
-      };
    }
 }
