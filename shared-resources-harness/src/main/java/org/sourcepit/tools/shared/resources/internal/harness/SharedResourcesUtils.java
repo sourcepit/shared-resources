@@ -89,6 +89,10 @@ public final class SharedResourcesUtils
 
       if (archiveName == null)
       {
+         if (path == null)
+         {
+            throw new FileNotFoundException("Unable to resolve path: " + resourcesPath);
+         }
          importFile(classLoader, createFullResourcesPath(resourcesLocation, path), path, encoding, targetDir, wrapper);
       }
       else
