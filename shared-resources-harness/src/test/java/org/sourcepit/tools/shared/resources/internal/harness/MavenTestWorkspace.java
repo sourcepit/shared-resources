@@ -43,26 +43,34 @@ public class MavenTestWorkspace
       Assert.assertEquals(0, ws.list().length);
    }
 
-   public File importResources(String path) throws IOException
+   public File importResources(String path)
    {
+
       return importResources(path, null);
    }
 
-   public File importResources(String sourcePath, String targetPath) throws IOException
+   public File importResources(String sourcePath, String targetPath)
    {
-      File outDir;
-      if (targetPath == null)
+      try
       {
-         outDir = getDir();
+         File outDir;
+         if (targetPath == null)
+         {
+            outDir = getDir();
+         }
+         else
+         {
+            outDir = new File(getDir(), targetPath);
+            outDir.mkdirs();
+         }
+         SharedResourcesUtils.copy(testCase.getClass().getClassLoader(), sharedResourcesLocation, sourcePath, outDir,
+            false, null);
+         return outDir;
       }
-      else
+      catch (IOException e)
       {
-         outDir = new File(getDir(), targetPath);
-         outDir.mkdirs();
+         throw new IllegalStateException(e);
       }
-      SharedResourcesUtils.copy(testCase.getClass().getClassLoader(), sharedResourcesLocation, sourcePath,
-         outDir, false, null);
-      return outDir;
    }
 
    protected File create()
