@@ -16,7 +16,9 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -220,23 +222,32 @@ public final class SharedResourcesUtils
    private static Properties loadResourcesProperties(ClassLoader classLoader, String templatesLocation)
    {
       final Properties resourceProperties = new Properties();
-      final InputStream in = classLoader.getResourceAsStream(createFullResourcesPath(templatesLocation,
-         "resources.properties"));
+
+      final String pathToResourceProperties = createFullResourcesPath(templatesLocation, "resources.properties");
+
       try
       {
-         if (in != null)
+         Enumeration<URL> resources = classLoader.getResources(pathToResourceProperties);
+         while (resources.hasMoreElements())
          {
-            resourceProperties.load(in);
+            InputStream in = null;
+            try
+            {
+               final URL url = (URL) resources.nextElement();
+               in = url.openStream();
+               resourceProperties.load(in);
+            }
+            finally
+            {
+               IOUtils.closeQuietly(in);
+            }
          }
       }
       catch (IOException e)
       {
          throw new IllegalStateException(e);
       }
-      finally
-      {
-         IOUtils.closeQuietly(in);
-      }
+
       return resourceProperties;
    }
 

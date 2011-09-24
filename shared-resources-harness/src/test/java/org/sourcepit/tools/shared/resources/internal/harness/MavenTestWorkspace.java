@@ -17,7 +17,7 @@ public class MavenTestWorkspace
    private final TestCase testCase;
    private final boolean deleteOnTearDown;
    private File ws;
-   private String sharedResourcesLocation = "META-INF/shared-resources";
+   private String sharedResourcesLocation = "META-INF/shared-test-resources";
 
    public MavenTestWorkspace(TestCase testCase, boolean deleteOnTearDown)
    {
