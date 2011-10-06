@@ -9,9 +9,12 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import org.codehaus.plexus.interpolation.InterpolationPostProcessor;
 import org.codehaus.plexus.interpolation.ValueSource;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.FileUtils.FilterWrapper;
+import org.sourcepit.tools.shared.resources.internal.harness.AbstractStreamCopier;
+import org.sourcepit.tools.shared.resources.internal.harness.IFilteredCopier;
 import org.sourcepit.tools.shared.resources.internal.harness.SharedResourcesUtils;
 
 /**
@@ -67,16 +70,25 @@ public abstract class AbstractPropertyInterpolator
       this.escapeWindowsPaths = escapeWindowsPaths;
    }
 
-   protected FilterWrapper newFilterWrapper()
+   protected IFilteredCopier newCopier()
    {
-      return new FileUtils.FilterWrapper()
+      final IFilteredCopier copier = new AbstractStreamCopier()
       {
          @Override
-         public Reader getReader(Reader reader)
+         protected FilterWrapper getFilterWrapper(final InterpolationPostProcessor postProcessor)
          {
-            return SharedResourcesUtils.createFilterReader(reader, getDelimiters(), getValueSources(),
-               getEscapeString(), isEscapeWindowsPaths());
+            final FileUtils.FilterWrapper filterWrapper = new FileUtils.FilterWrapper()
+            {
+               @Override
+               public Reader getReader(Reader reader)
+               {
+                  return SharedResourcesUtils.createFilterReader(reader, getDelimiters(), getValueSources(),
+                     getEscapeString(), isEscapeWindowsPaths(), postProcessor);
+               }
+            };
+            return filterWrapper;
          }
       };
+      return copier;
    }
 }

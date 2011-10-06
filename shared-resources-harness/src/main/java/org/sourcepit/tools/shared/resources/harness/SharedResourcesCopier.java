@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.jar.Manifest;
 
 import org.apache.commons.io.IOUtils;
-import org.codehaus.plexus.util.FileUtils.FilterWrapper;
+import org.sourcepit.tools.shared.resources.internal.harness.IFilteredCopier;
 import org.sourcepit.tools.shared.resources.internal.harness.SharedResourcesUtils;
 
 public class SharedResourcesCopier extends AbstractPropertyInterpolator
@@ -83,7 +83,7 @@ public class SharedResourcesCopier extends AbstractPropertyInterpolator
          }
       }
 
-      final FilterWrapper filterWrapper = isFilter() ? newFilterWrapper() : null;
+      final IFilteredCopier copier = isFilter() ? newCopier() : null;
 
       final List<IOException> ioException = new ArrayList<IOException>();
 
@@ -91,7 +91,7 @@ public class SharedResourcesCopier extends AbstractPropertyInterpolator
       {
          try
          {
-            SharedResourcesUtils.copy(classLoader, resourceLocation, resourcePath, targetDir, false, filterWrapper);
+            SharedResourcesUtils.copy(classLoader, resourceLocation, resourcePath, targetDir, false, copier);
             return;
          }
          catch (IOException e)

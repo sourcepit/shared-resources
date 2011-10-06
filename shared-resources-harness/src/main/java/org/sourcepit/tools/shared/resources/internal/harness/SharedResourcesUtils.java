@@ -4,17 +4,13 @@
 
 package org.sourcepit.tools.shared.resources.internal.harness;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.Writer;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.Collection;
@@ -38,7 +34,6 @@ import org.codehaus.plexus.interpolation.SimpleRecursionInterceptor;
 import org.codehaus.plexus.interpolation.ValueSource;
 import org.codehaus.plexus.interpolation.multi.MultiDelimiterInterpolatorFilterReader;
 import org.codehaus.plexus.interpolation.multi.MultiDelimiterStringSearchInterpolator;
-import org.codehaus.plexus.util.FileUtils.FilterWrapper;
 
 /**
  * @author Bernd
@@ -51,7 +46,7 @@ public final class SharedResourcesUtils
    }
 
    public static void copy(ClassLoader classLoader, String resourcesLocation, String resourcesPath, File targetDir,
-      boolean keepArchivePaths, FilterWrapper wrapper) throws FileNotFoundException, IOException
+      boolean keepArchivePaths, IFilteredCopier copier) throws FileNotFoundException, IOException
    {
       final Properties resources = loadResourcesProperties(classLoader, resourcesLocation);
 
@@ -95,17 +90,17 @@ public final class SharedResourcesUtils
          {
             throw new FileNotFoundException("Unable to resolve path: " + resourcesPath);
          }
-         importFile(classLoader, createFullResourcesPath(resourcesLocation, path), path, encoding, targetDir, wrapper);
+         importFile(classLoader, createFullResourcesPath(resourcesLocation, path), path, encoding, targetDir, copier);
       }
       else
       {
          importArchive(classLoader, createFullResourcesPath(resourcesLocation, archiveName), path,
-            archiveName.substring(0, archiveName.length() - 4), encoding, targetDir, keepArchivePaths, wrapper);
+            archiveName.substring(0, archiveName.length() - 4), encoding, targetDir, keepArchivePaths, copier);
       }
    }
 
    private static void importArchive(ClassLoader classLoader, String archivePath, String archiveEntry, String dirName,
-      String encoding, File targetDir, boolean keepArchivePaths, FilterWrapper wrapper) throws FileNotFoundException,
+      String encoding, File targetDir, boolean keepArchivePaths, IFilteredCopier copier) throws FileNotFoundException,
       IOException
    {
       final InputStream in = classLoader.getResourceAsStream(archivePath);
@@ -123,7 +118,7 @@ public final class SharedResourcesUtils
       final ZipArchiveInputStream zipIn = new ZipArchiveInputStream(in, encoding, true);
       try
       {
-         importArchive(zipIn, archiveEntry, outDir, keepArchivePaths, encoding, wrapper);
+         importArchive(zipIn, archiveEntry, outDir, keepArchivePaths, encoding, copier);
       }
       finally
       {
@@ -132,7 +127,7 @@ public final class SharedResourcesUtils
    }
 
    private static void importArchive(ZipArchiveInputStream zipIn, String archiveEntry, File outDir,
-      boolean keepArchivePaths, String encoding, FilterWrapper wrapper) throws IOException
+      boolean keepArchivePaths, String encoding, IFilteredCopier copier) throws IOException
    {
       ArchiveEntry entry = zipIn.getNextEntry();
       while (entry != null)
@@ -175,7 +170,7 @@ public final class SharedResourcesUtils
                OutputStream out = new FileOutputStream(file);
                try
                {
-                  copy(zipIn, out, encoding, wrapper);
+                  copy(zipIn, out, encoding, copier, file);
                }
                finally
                {
@@ -188,7 +183,7 @@ public final class SharedResourcesUtils
    }
 
    private static void importFile(ClassLoader classLoader, String path, String fileName, String encoding,
-      File targetDir, FilterWrapper wrapper) throws FileNotFoundException, IOException
+      File targetDir, IFilteredCopier copier) throws FileNotFoundException, IOException
    {
       final InputStream in = classLoader.getResourceAsStream(path);
       if (in == null)
@@ -206,7 +201,7 @@ public final class SharedResourcesUtils
          final OutputStream out = new FileOutputStream(outFile);
          try
          {
-            copy(in, out, encoding, wrapper);
+            copy(in, out, encoding, copier, outFile);
          }
          finally
          {
@@ -292,17 +287,12 @@ public final class SharedResourcesUtils
    }
 
 
-   private static void copy(InputStream from, OutputStream to, String encoding, FilterWrapper wrapper)
+   private static void copy(InputStream from, OutputStream to, String encoding, IFilteredCopier copier, File outFile)
       throws IOException
    {
-      if (wrapper != null)
+      if (copier != null)
       {
-         // buffer so it isn't reading a byte at a time!
-         Reader fileReader = new BufferedReader(new InputStreamReader(from, encoding));
-         Writer fileWriter = new OutputStreamWriter(to, encoding);
-         Reader reader = wrapper.getReader(fileReader);
-         IOUtils.copy(reader, fileWriter);
-         fileWriter.flush();
+         copier.copy(from, to, encoding, outFile);
       }
       else
       {
@@ -312,27 +302,34 @@ public final class SharedResourcesUtils
 
 
    public static Reader createFilterReader(Reader reader, LinkedHashSet<String> delimiters,
-      Collection<ValueSource> valueSources, String escapeString, boolean escapeWindowsPaths)
+      Collection<ValueSource> valueSources, String escapeString, final boolean escapeWindowsPaths,
+      final InterpolationPostProcessor postProcessor)
    {
       final MultiDelimiterStringSearchInterpolator interpolator = new MultiDelimiterStringSearchInterpolator();
       interpolator.setDelimiterSpecs(delimiters);
       interpolator.setEscapeString(escapeString);
 
-      if (escapeWindowsPaths)
-      {
-         interpolator.addPostProcessor(new InterpolationPostProcessor()
-         {
-            public Object execute(String expression, Object value)
-            {
-               if (value instanceof String)
-               {
-                  return FilteringUtils.escapeWindowsPath((String) value);
-               }
 
-               return value;
+      interpolator.addPostProcessor(new InterpolationPostProcessor()
+      {
+         public Object execute(String expression, Object value)
+         {
+            if (escapeWindowsPaths && value instanceof String)
+            {
+               value = FilteringUtils.escapeWindowsPath((String) value);
             }
-         });
-      }
+
+            if (postProcessor != null)
+            {
+               final Object newValue = postProcessor.execute(expression, value);
+               if (newValue != null)
+               {
+                  value = newValue;
+               }
+            }
+            return value;
+         }
+      });
 
       final Set<String> prefixes = new HashSet<String>();
       for (ValueSource valueSource : valueSources)

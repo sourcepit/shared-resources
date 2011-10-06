@@ -24,7 +24,8 @@ public class StringInterpolator extends AbstractPropertyInterpolator
       try
       {
          writer = new StringWriter();
-         reader = newFilterWrapper().getReader(new StringReader(value));
+         reader = new StringReader(value);
+         newCopier().copy(reader, writer, null);
          IOUtils.copy(reader, writer);
       }
       catch (IOException e)
@@ -38,5 +39,4 @@ public class StringInterpolator extends AbstractPropertyInterpolator
       }
       return writer.toString();
    }
-
 }
