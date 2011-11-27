@@ -21,10 +21,10 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.resources.ResourcesMojo;
 import org.codehaus.plexus.util.ReaderFactory;
-import org.sourcepit.common.mf.internal.merge.ManifestMerger;
-import org.sourcepit.common.mf.internal.merge.MultiValueHeaderMerger;
-import org.sourcepit.common.mf.internal.model.Manifest;
-import org.sourcepit.common.mf.internal.model.ManifestFactory;
+import org.sourcepit.common.manifest.Manifest;
+import org.sourcepit.common.manifest.ManifestFactory;
+import org.sourcepit.common.manifest.merge.ManifestMerger;
+import org.sourcepit.common.manifest.merge.MultiValueHeaderMerger;
 import org.sourcepit.tools.manifest.internal.mojo.MavenProjectManifestMerger;
 
 /**
