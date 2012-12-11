@@ -129,6 +129,8 @@ public final class SharedResourcesUtils
    private static void importArchive(ZipArchiveInputStream zipIn, String archiveEntry, File outDir,
       boolean keepArchivePaths, String encoding, IFilteredCopier copier) throws IOException
    {
+      boolean found = false;
+      
       ArchiveEntry entry = zipIn.getNextEntry();
       while (entry != null)
       {
@@ -136,6 +138,8 @@ public final class SharedResourcesUtils
 
          if (archiveEntry == null || entryName.startsWith(archiveEntry + "/") || entryName.equals(archiveEntry))
          {
+            found = true;
+            
             boolean isDir = entry.isDirectory();
 
             final String fileName;
@@ -179,6 +183,11 @@ public final class SharedResourcesUtils
             }
          }
          entry = zipIn.getNextEntry();
+      }
+      
+      if (!found)
+      {
+         throw new FileNotFoundException(archiveEntry);
       }
    }
 
