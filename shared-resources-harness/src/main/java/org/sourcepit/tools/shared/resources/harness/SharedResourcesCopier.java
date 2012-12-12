@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.jar.Manifest;
 
 import org.apache.commons.io.IOUtils;
+import org.sourcepit.tools.shared.resources.internal.harness.IFilterStrategy;
 import org.sourcepit.tools.shared.resources.internal.harness.IFilteredCopier;
 import org.sourcepit.tools.shared.resources.internal.harness.SharedResourcesUtils;
 
@@ -28,9 +29,25 @@ public class SharedResourcesCopier extends AbstractPropertyInterpolator
 
    private boolean filter = false;
 
+   private IFilterStrategy filterStrategy;
+
    public boolean isFilter()
    {
       return filter;
+   }
+
+   public IFilterStrategy getFilterStrategy()
+   {
+      if (this.filterStrategy == null)
+      {
+         this.filterStrategy = IFilterStrategy.TRUE;
+      }
+      return filterStrategy;
+   }
+
+   public void setFilterStrategy(IFilterStrategy filterStrategy)
+   {
+      this.filterStrategy = filterStrategy;
    }
 
    public void setFilter(boolean filter)
@@ -91,7 +108,8 @@ public class SharedResourcesCopier extends AbstractPropertyInterpolator
       {
          try
          {
-            SharedResourcesUtils.copy(classLoader, resourceLocation, resourcePath, targetDir, false, copier);
+            SharedResourcesUtils.copy(classLoader, resourceLocation, resourcePath, targetDir, false, copier,
+               getFilterStrategy());
             return;
          }
          catch (IOException e)

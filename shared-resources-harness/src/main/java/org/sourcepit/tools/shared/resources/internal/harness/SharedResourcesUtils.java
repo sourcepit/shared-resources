@@ -48,6 +48,13 @@ public final class SharedResourcesUtils
    public static void copy(ClassLoader classLoader, String resourcesLocation, String resourcesPath, File targetDir,
       boolean keepArchivePaths, IFilteredCopier copier) throws FileNotFoundException, IOException
    {
+      copy(classLoader, resourcesLocation, resourcesPath, targetDir, keepArchivePaths, copier, IFilterStrategy.TRUE);
+   }
+
+   public static void copy(ClassLoader classLoader, String resourcesLocation, String resourcesPath, File targetDir,
+      boolean keepArchivePaths, IFilteredCopier copier, IFilterStrategy strategy) throws FileNotFoundException,
+      IOException
+   {
       final Properties resources = loadResourcesProperties(classLoader, resourcesLocation);
 
       String encoding = null;
@@ -55,6 +62,7 @@ public final class SharedResourcesUtils
       String path = null;
 
       final String _resourcesPath = normalizeResourcesPath(resourcesPath);
+
       final int segmentLength = _resourcesPath.indexOf('/');
       if (segmentLength > -1)
       {
@@ -90,18 +98,19 @@ public final class SharedResourcesUtils
          {
             throw new FileNotFoundException("Unable to resolve path: " + resourcesPath);
          }
-         importFile(classLoader, createFullResourcesPath(resourcesLocation, path), path, encoding, targetDir, copier);
+         importFile(classLoader, createFullResourcesPath(resourcesLocation, path), path, encoding, targetDir, copier,
+            strategy);
       }
       else
       {
          importArchive(classLoader, createFullResourcesPath(resourcesLocation, archiveName), path,
-            archiveName.substring(0, archiveName.length() - 4), encoding, targetDir, keepArchivePaths, copier);
+            archiveName.substring(0, archiveName.length() - 4), encoding, targetDir, keepArchivePaths, copier, strategy);
       }
    }
 
    private static void importArchive(ClassLoader classLoader, String archivePath, String archiveEntry, String dirName,
-      String encoding, File targetDir, boolean keepArchivePaths, IFilteredCopier copier) throws FileNotFoundException,
-      IOException
+      String encoding, File targetDir, boolean keepArchivePaths, IFilteredCopier copier, IFilterStrategy strategy)
+      throws FileNotFoundException, IOException
    {
       final InputStream in = classLoader.getResourceAsStream(archivePath);
       if (in == null)
@@ -118,7 +127,7 @@ public final class SharedResourcesUtils
       final ZipArchiveInputStream zipIn = new ZipArchiveInputStream(in, encoding, true);
       try
       {
-         importArchive(zipIn, archiveEntry, outDir, keepArchivePaths, encoding, copier);
+         importArchive(zipIn, archiveEntry, outDir, keepArchivePaths, encoding, copier, strategy);
       }
       finally
       {
@@ -127,10 +136,10 @@ public final class SharedResourcesUtils
    }
 
    private static void importArchive(ZipArchiveInputStream zipIn, String archiveEntry, File outDir,
-      boolean keepArchivePaths, String encoding, IFilteredCopier copier) throws IOException
+      boolean keepArchivePaths, String encoding, IFilteredCopier copier, IFilterStrategy strategy) throws IOException
    {
       boolean found = false;
-      
+
       ArchiveEntry entry = zipIn.getNextEntry();
       while (entry != null)
       {
@@ -139,7 +148,7 @@ public final class SharedResourcesUtils
          if (archiveEntry == null || entryName.startsWith(archiveEntry + "/") || entryName.equals(archiveEntry))
          {
             found = true;
-            
+
             boolean isDir = entry.isDirectory();
 
             final String fileName;
@@ -174,7 +183,14 @@ public final class SharedResourcesUtils
                OutputStream out = new FileOutputStream(file);
                try
                {
-                  copy(zipIn, out, encoding, copier, file);
+                  if (copier != null && strategy.filter(fileName))
+                  {
+                     copy(zipIn, out, encoding, copier, file);
+                  }
+                  else
+                  {
+                     IOUtils.copy(zipIn, out);
+                  }
                }
                finally
                {
@@ -184,7 +200,7 @@ public final class SharedResourcesUtils
          }
          entry = zipIn.getNextEntry();
       }
-      
+
       if (!found)
       {
          throw new FileNotFoundException(archiveEntry);
@@ -192,7 +208,7 @@ public final class SharedResourcesUtils
    }
 
    private static void importFile(ClassLoader classLoader, String path, String fileName, String encoding,
-      File targetDir, IFilteredCopier copier) throws FileNotFoundException, IOException
+      File targetDir, IFilteredCopier copier, IFilterStrategy strategy) throws FileNotFoundException, IOException
    {
       final InputStream in = classLoader.getResourceAsStream(path);
       if (in == null)
@@ -210,7 +226,14 @@ public final class SharedResourcesUtils
          final OutputStream out = new FileOutputStream(outFile);
          try
          {
-            copy(in, out, encoding, copier, outFile);
+            if (copier != null && strategy.filter(fileName))
+            {
+               copy(in, out, encoding, copier, outFile);
+            }
+            else
+            {
+               IOUtils.copy(in, out);
+            }
          }
          finally
          {
@@ -299,14 +322,7 @@ public final class SharedResourcesUtils
    private static void copy(InputStream from, OutputStream to, String encoding, IFilteredCopier copier, File outFile)
       throws IOException
    {
-      if (copier != null)
-      {
-         copier.copy(from, to, encoding, outFile);
-      }
-      else
-      {
-         IOUtils.copy(from, to);
-      }
+      copier.copy(from, to, encoding, outFile);
    }
 
 
