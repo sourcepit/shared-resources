@@ -38,7 +38,7 @@
 			<dependency>
 				<groupId>org.sourcepit.tools</groupId>
 				<artifactId>manifest-maven-plugin</artifactId>
-				<version>0.1.0-SNAPSHOT</version>
+				<version>0.1.0-alpha-4</version>
 				<type>maven-plugin</type>
 			</dependency>
 			<dependency>
