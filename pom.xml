@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>org.sourcepit</groupId>
 		<artifactId>srcpit-parent</artifactId>
-		<version>10</version>
+		<version>11-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.sourcepit.tools</groupId>
 	<artifactId>shared-resources</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.7.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<scm>
@@ -38,7 +38,7 @@
 			<dependency>
 				<groupId>org.sourcepit.tools</groupId>
 				<artifactId>manifest-maven-plugin</artifactId>
-				<version>0.1.0-alpha-6</version>
+				<version>0.7.0-SNAPSHOT</version>
 				<type>maven-plugin</type>
 			</dependency>
 			<dependency>
@@ -50,7 +50,7 @@
 			<dependency>
 				<groupId>org.codehaus.plexus</groupId>
 				<artifactId>plexus-interpolation</artifactId>
-				<version>1.16</version>
+				<version>1.19</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

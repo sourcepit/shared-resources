@@ -6,6 +6,7 @@ package org.sourcepit.tools.shared.resources.internal.harness;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -171,9 +172,9 @@ public class SharedResourcesUtilsTest extends TestCase
       File file1 = ws.getDir().listFiles()[0];
       assertEquals("foo.txt", file1.getName());
       assertTrue(file1.isFile());
-      
-      SharedResourcesUtils.copy(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst/foo/bär.txt", ws.getDir(),
-         false, null);
+
+      SharedResourcesUtils.copy(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst/foo/bär.txt",
+         ws.getDir(), false, null);
    }
 
    public void testImportFileInArchive_keepArchivePaths() throws Exception
@@ -233,16 +234,16 @@ public class SharedResourcesUtilsTest extends TestCase
    public void testGetPossiblePrefixes() throws Exception
    {
       ValueSource source = ValueSourceUtils.newPropertyValueSource(new Properties());
-      List<String> actualPrefixes = SharedResourcesUtils.getPossiblePrefixes(source);
+      String[] actualPrefixes = SharedResourcesUtils.getPossiblePrefixes(source);
       assertNull(actualPrefixes);
 
-      List<String> prefixes = new ArrayList<String>();
-      prefixes.add("pom");
-      prefixes.add("project");
+      String[] prefixes = new String[2];
+      prefixes[0] = "pom";
+      prefixes[1] = "project";
 
       source = ValueSourceUtils.newPrefixedValueSource(prefixes, new Object());
 
       actualPrefixes = SharedResourcesUtils.getPossiblePrefixes(source);
-      assertEquals(prefixes, actualPrefixes);
+      assertTrue(Arrays.equals(prefixes, actualPrefixes));
    }
 }

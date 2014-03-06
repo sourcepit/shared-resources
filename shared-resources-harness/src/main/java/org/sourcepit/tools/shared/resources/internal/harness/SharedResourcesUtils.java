@@ -14,6 +14,7 @@ import java.io.Reader;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -360,10 +361,10 @@ public final class SharedResourcesUtils
       for (ValueSource valueSource : valueSources)
       {
          interpolator.addValueSource(valueSource);
-         List<String> _prefixes = SharedResourcesUtils.getPossiblePrefixes(valueSource);
+         String[] _prefixes = SharedResourcesUtils.getPossiblePrefixes(valueSource);
          if (_prefixes != null)
          {
-            prefixes.addAll(_prefixes);
+            Collections.addAll(prefixes, _prefixes);
          }
       }
 
@@ -388,7 +389,7 @@ public final class SharedResourcesUtils
    }
 
    @SuppressWarnings("unchecked")
-   protected static List<String> getPossiblePrefixes(ValueSource source)
+   protected static String[] getPossiblePrefixes(ValueSource source)
    {
       try
       {
@@ -405,7 +406,7 @@ public final class SharedResourcesUtils
                field = pp.getClass().getDeclaredField("possiblePrefixes");
                field.setAccessible(true);
 
-               return (List<String>) field.get(pp);
+               return (String[]) field.get(pp);
             }
          }
          return null;

@@ -4,6 +4,7 @@
 
 package org.sourcepit.tools.shared.resources.harness;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -32,6 +33,11 @@ public final class ValueSourceUtils
    public static ValueSource newPrefixedValueSource(String prefix, Object root)
    {
       return new PrefixedObjectValueSource(prefix, root);
+   }
+   
+   public static ValueSource newPrefixedValueSource(String[] possiblePrefixes, Object root)
+   {
+      return newPrefixedValueSource(Arrays.asList(possiblePrefixes), root);
    }
 
    public static ValueSource newPrefixedValueSource(List<String> possiblePrefixes, Object root)

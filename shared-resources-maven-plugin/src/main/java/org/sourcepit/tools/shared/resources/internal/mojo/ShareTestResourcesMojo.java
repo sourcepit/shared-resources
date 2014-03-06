@@ -47,7 +47,7 @@ public class ShareTestResourcesMojo extends AbstractSharedResourcesMojo
    private String targetPath;
 
    /**
-    * @parameter expression="${project.build.testOutputDirectory}/META-INF/MANIFEST.MF"
+    * @parameter default-value="${project.build.testOutputDirectory}/META-INF/MANIFEST.MF"
     * @required
     */
    private File manifestFile;
