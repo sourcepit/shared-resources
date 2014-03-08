@@ -6,56 +6,45 @@ package org.sourcepit.tools.shared.resources.internal.mojo;
 
 import java.io.File;
 
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+
 /**
  * @extendsPlugin resources
  * @extendsGoal resources
- * @goal share-resources
- * @phase process-resources
- * @requiresProject true
  */
+@Mojo(name = "share-resources", defaultPhase = LifecyclePhase.PROCESS_RESOURCES, requiresProject = true)
 public class SharedResourcesMojo extends AbstractSharedResourcesMojo
 {
    /**
     * The output directory into which to copy the resources.
-    * 
-    * @parameter default-value="${project.build.outputDirectory}"
-    * @required
     */
+   @Parameter(defaultValue = "${project.build.outputDirectory}", required = true)
    private File outputDirectory;
 
    /**
     * Directory which is containing the resources that should be shared among projects
-    * 
-    * @parameter default-value="${basedir}/src/main/shared-resources"
-    * @required
     */
+   @Parameter(defaultValue = "${basedir}/src/main/shared-resources", required = true)
    private File resourcesDirectory;
 
    /**
     * The mojos working directory.
-    * 
-    * @parameter default-value="${project.build.directory}/generated-resources/shared-resources/"
-    * @required
     */
+   @Parameter(defaultValue = "${project.build.directory}/generated-resources/shared-resources/", required = true)
    private File processedResourcesDirectory;
 
    /**
     * Path of the directory under which the resources will appear in the final build artifact.
-    * 
-    * @parameter default-value="META-INF/shared-resources"
     */
+   @Parameter(defaultValue = "META-INF/shared-resources")
    private String targetPath;
 
-   /**
-    * @parameter default-value="${project.build.outputDirectory}/META-INF/MANIFEST.MF"
-    * @required
-    */
+   @Parameter(defaultValue = "${project.build.outputDirectory}/META-INF/MANIFEST.MF", required = true)
    private File manifestFile;
-   
-   /**
-    * @parameter default-value="Shared-Resources"
-    * @required
-    */
+
+   @Parameter(defaultValue = "Shared-Resources", required = true)
    private String manifestHeaderName;
 
    public File _getOutputDirectory()
@@ -107,12 +96,12 @@ public class SharedResourcesMojo extends AbstractSharedResourcesMojo
    {
       return manifestFile;
    }
-   
+
    public String getManifestHeaderName()
    {
       return manifestHeaderName;
    }
-   
+
    public void setManifestHeaderName(String manifestHeaderName)
    {
       this.manifestHeaderName = manifestHeaderName;

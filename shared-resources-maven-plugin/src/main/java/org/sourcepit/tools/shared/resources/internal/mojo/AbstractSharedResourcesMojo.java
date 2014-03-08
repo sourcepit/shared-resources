@@ -20,12 +20,12 @@ import org.apache.commons.io.IOUtils;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.resources.ResourcesMojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.codehaus.plexus.util.ReaderFactory;
 import org.sourcepit.common.manifest.Manifest;
 import org.sourcepit.common.manifest.ManifestFactory;
 import org.sourcepit.common.manifest.merge.ManifestMerger;
 import org.sourcepit.common.manifest.merge.MultiValueHeaderMerger;
-import org.sourcepit.tools.manifest.internal.mojo.MavenProjectManifestMerger;
 
 /**
  * @author Bernd
@@ -37,17 +37,13 @@ public abstract class AbstractSharedResourcesMojo extends ResourcesMojo
     * the <code>properties</code> element and from the properties in the files listed in the <code>filters</code>
     * element. Note: While the type of this field is <code>String</code> for technical reasons, the semantic type is
     * actually <code>Boolean</code>. Default value is <code>false</code>.
-    * 
-    * @parameter default-value="false"
     */
+   @Parameter(defaultValue = "false")
    private boolean filtering;
 
    private Properties resourceProperties;
 
-   /**
-    * @parameter default-value="${project.build.directory}/shared-resources/"
-    * @required
-    */
+   @Parameter(defaultValue = "${project.build.directory}/shared-resources/", required = true)
    private File workingDirectory;
 
    @Override

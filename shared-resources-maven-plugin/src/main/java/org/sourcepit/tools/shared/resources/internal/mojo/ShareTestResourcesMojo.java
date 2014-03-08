@@ -6,56 +6,45 @@ package org.sourcepit.tools.shared.resources.internal.mojo;
 
 import java.io.File;
 
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+
 /**
  * @extendsPlugin resources
  * @extendsGoal resources
- * @goal share-test-resources
- * @phase process-test-resources
- * @requiresProject true
  */
+@Mojo(name = "share-test-resources", defaultPhase = LifecyclePhase.PROCESS_TEST_RESOURCES, requiresProject = true)
 public class ShareTestResourcesMojo extends AbstractSharedResourcesMojo
 {
    /**
     * The output directory into which to copy the resources.
-    * 
-    * @parameter default-value="${project.build.testOutputDirectory}"
-    * @required
     */
+   @Parameter(defaultValue = "${project.build.testOutputDirectory}", required = true)
    private File outputDirectory;
 
    /**
     * Directory which is containing the resources that should be shared among projects
-    * 
-    * @parameter default-value="${basedir}/src/test/shared-resources"
-    * @required
     */
+   @Parameter(defaultValue = "${basedir}/src/test/shared-resources", required = true)
    private File resourcesDirectory;
 
    /**
     * The working directory of the mojo.
-    * 
-    * @parameter default-value="${project.build.directory}/generated-test-resources/shared-resources/"
-    * @required
     */
+   @Parameter(defaultValue = "${project.build.directory}/generated-test-resources/shared-resources/", required = true)
    private File processedResourcesDirectory;
 
    /**
     * Path of the directory under which the resources will appear in the final build artifact.
-    * 
-    * @parameter default-value="META-INF/shared-test-resources"
     */
+   @Parameter(defaultValue = "META-INF/shared-test-resources")
    private String targetPath;
 
-   /**
-    * @parameter default-value="${project.build.testOutputDirectory}/META-INF/MANIFEST.MF"
-    * @required
-    */
+   @Parameter(defaultValue = "${project.build.testOutputDirectory}/META-INF/MANIFEST.MF", required = true)
    private File manifestFile;
-   
-   /**
-    * @parameter default-value="Shared-Test-Resources"
-    * @required
-    */
+
+   @Parameter(defaultValue = "Shared-Test-Resources", required = true)
    private String manifestHeaderName;
 
    public File _getOutputDirectory()
