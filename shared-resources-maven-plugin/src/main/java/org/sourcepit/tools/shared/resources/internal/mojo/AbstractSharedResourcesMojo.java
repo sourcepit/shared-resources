@@ -89,11 +89,18 @@ public abstract class AbstractSharedResourcesMojo extends ResourcesMojo
          final Manifest manifest = ManifestFactory.eINSTANCE.createManifest();
          manifest.getHeaders().put(headerName, getTargetPath() == null ? "" : getTargetPath());
 
-         final MultiValueHeaderMerger headerMerger = new MultiValueHeaderMerger();
-         headerMerger.getHeaderNames().add(headerName);
+         final MultiValueHeaderMerger headerMerger = new MultiValueHeaderMerger()
+         {
+            @Override
+            public boolean isResponsibleFor(String section, String header, String targetValue,
+               String sourceValue)
+            {
+               return headerName.equals(header);
+            }
+         };
 
          final ManifestMerger merger = new ManifestMerger();
-         merger.getHeaderMergers().add(headerMerger);
+         merger.getCustomHeaderMergers().add(headerMerger);
 
          new MavenProjectManifestMerger().merge(project, getManifestFile(), merger, manifest);
       }
@@ -204,6 +211,7 @@ public abstract class AbstractSharedResourcesMojo extends ResourcesMojo
    }
 
    // HACK we want to force the resources mojo to copy the template resources into our working directory first
+   @Override
    public final File getOutputDirectory()
    {
       return workingDirectory;
@@ -211,10 +219,12 @@ public abstract class AbstractSharedResourcesMojo extends ResourcesMojo
 
    public abstract File _getOutputDirectory();
 
+   @Override
    public abstract void setOutputDirectory(File outputDirectory);
 
    private List<Resource> resources;
 
+   @Override
    public List<Resource> getResources()
    {
       if (resources == null)

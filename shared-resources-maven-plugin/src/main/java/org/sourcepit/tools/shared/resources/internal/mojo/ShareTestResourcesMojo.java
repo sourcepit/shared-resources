@@ -47,61 +47,73 @@ public class ShareTestResourcesMojo extends AbstractSharedResourcesMojo
    @Parameter(defaultValue = "Shared-Test-Resources", required = true)
    private String manifestHeaderName;
 
+   @Override
    public File _getOutputDirectory()
    {
       return outputDirectory;
    }
 
+   @Override
    public void setOutputDirectory(File outputDirectory)
    {
       this.outputDirectory = outputDirectory;
    }
 
+   @Override
    public File getResourcesDirectory()
    {
       return resourcesDirectory;
    }
 
+   @Override
    public void setResourcesDirectory(File resourcesDirectory)
    {
       this.resourcesDirectory = resourcesDirectory;
    }
 
+   @Override
    public File getProcessedResourcesDirectory()
    {
       return processedResourcesDirectory;
    }
 
+   @Override
    public void setProcessedResourcesDirectory(File processedResourcesDirectory)
    {
       this.processedResourcesDirectory = processedResourcesDirectory;
    }
 
+   @Override
    public String getTargetPath()
    {
       return targetPath;
    }
 
+   @Override
    public void setTargetPath(String targetPath)
    {
       this.targetPath = targetPath;
    }
 
+   @Override
    public void setManifestFile(File manifestFile)
    {
       this.manifestFile = manifestFile;
    }
 
+   @Override
    public File getManifestFile()
    {
       return manifestFile;
    }
 
+   @Override
    public String getManifestHeaderName()
    {
       return manifestHeaderName;
    }
 
+   @Override
    public void setManifestHeaderName(String manifestHeaderName)
    {
       this.manifestHeaderName = manifestHeaderName;
