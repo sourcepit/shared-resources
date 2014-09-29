@@ -10,3 +10,4 @@ shared-resources-maven-plugin/.classpath
 shared-resources-maven-plugin/.project
 shared-resources-maven-plugin/.settings
 shared-resources-maven-plugin/target
+/target
