@@ -1,2 +1,7 @@
+/.settings
+shared-resources-harness/.checkstyle
+shared-resources-harness/.settings
 shared-resources-harness/target
+shared-resources-maven-plugin/.checkstyle
+shared-resources-maven-plugin/.settings
 shared-resources-maven-plugin/target
