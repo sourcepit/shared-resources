@@ -1,8 +1,12 @@
 /.project
 /.settings
 shared-resources-harness/.checkstyle
+shared-resources-harness/.classpath
+shared-resources-harness/.project
 shared-resources-harness/.settings
 shared-resources-harness/target
 shared-resources-maven-plugin/.checkstyle
+shared-resources-maven-plugin/.classpath
+shared-resources-maven-plugin/.project
 shared-resources-maven-plugin/.settings
 shared-resources-maven-plugin/target
