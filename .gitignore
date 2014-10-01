@@ -4,10 +4,15 @@ shared-resources-harness/.checkstyle
 shared-resources-harness/.classpath
 shared-resources-harness/.project
 shared-resources-harness/.settings
+shared-resources-harness/src/main/resources/META-INF/LICENSE
+shared-resources-harness/src/test/resources/META-INF/LICENSE
 shared-resources-harness/target
 shared-resources-maven-plugin/.checkstyle
 shared-resources-maven-plugin/.classpath
 shared-resources-maven-plugin/.project
 shared-resources-maven-plugin/.settings
+shared-resources-maven-plugin/src/main/resources/META-INF/LICENSE
+shared-resources-maven-plugin/src/test/resources/META-INF/LICENSE
 shared-resources-maven-plugin/target
+/src
 /target
