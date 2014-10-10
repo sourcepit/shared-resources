@@ -29,7 +29,7 @@
 	<packaging>pom</packaging>
 
 	<scm>
-		<connection>scm:svn:http://svn.sourcepit.org/tools/trunk/shared-resources</connection>
+		<connection>scm:git:git@github.com:sourcepit/shared-resources.git</connection>
 	</scm>
 
 	<modules>
