@@ -81,6 +81,7 @@
 				<artifactId>maven-inherit-plugin</artifactId>
 				<executions>
 					<execution>
+						<phase>process-classes</phase>
 						<goals>
 							<goal>inherit</goal>
 						</goals>
