@@ -25,12 +25,13 @@
 
 	<groupId>org.sourcepit.tools</groupId>
 	<artifactId>shared-resources</artifactId>
-	<version>0.10.0-SNAPSHOT</version>
+	<version>0.10.0</version>
 	<packaging>pom</packaging>
 
 	<scm>
 		<connection>scm:git:git@github.com:sourcepit/shared-resources.git</connection>
-	</scm>
+	  <tag>0.10.0</tag>
+  </scm>
 
 	<modules>
 		<module>shared-resources-maven-plugin</module>
