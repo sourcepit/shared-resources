@@ -32,34 +32,27 @@ import org.apache.commons.io.IOUtils;
 import org.codehaus.plexus.interpolation.InterpolationPostProcessor;
 import org.codehaus.plexus.util.FileUtils.FilterWrapper;
 
-public abstract class AbstractStreamCopier implements InterpolationPostProcessor, IFilteredCopier
-{
+public abstract class AbstractStreamCopier implements InterpolationPostProcessor, IFilteredCopier {
    protected Map<String, String> extensionToValueConverterMap = new HashMap<String, String>();
 
    protected ThreadLocal<String> currentFileExt = new ThreadLocal<String>();
 
-   public Object execute(String expression, Object value)
-   {
-      if (value instanceof String)
-      {
+   public Object execute(String expression, Object value) {
+      if (value instanceof String) {
          final String fileExt = currentFileExt.get();
-         if ("properties".equals(fileExt))
-         {
+         if ("properties".equals(fileExt)) {
             return new PropertyValueFormatter().execute(expression, (String) value);
          }
       }
       return null;
    }
 
-   private String getFileExtension(File file)
-   {
-      if (file != null)
-      {
+   private String getFileExtension(File file) {
+      if (file != null) {
          String fileName = file.getName();
 
          int idx = fileName.lastIndexOf('.');
-         if (idx > -1 && fileName.length() > 1)
-         {
+         if (idx > -1 && fileName.length() > 1) {
             return fileName.substring(idx + 1);
          }
       }
@@ -69,8 +62,7 @@ public abstract class AbstractStreamCopier implements InterpolationPostProcessor
    /**
     * {@inheritDoc}
     */
-   public void copy(InputStream from, OutputStream to, String encoding, File outFile) throws IOException
-   {
+   public void copy(InputStream from, OutputStream to, String encoding, File outFile) throws IOException {
       // buffer so it isn't reading a byte at a time!
       Reader reader = new BufferedReader(new InputStreamReader(from, encoding));
       Writer writer = new OutputStreamWriter(to, encoding);
@@ -80,17 +72,14 @@ public abstract class AbstractStreamCopier implements InterpolationPostProcessor
    /**
     * {@inheritDoc}
     */
-   public void copy(Reader from, Writer to, File outFile) throws IOException
-   {
+   public void copy(Reader from, Writer to, File outFile) throws IOException {
       currentFileExt.set(getFileExtension(outFile));
-      try
-      {
+      try {
          Reader reader = getFilterWrapper(this).getReader(from);
          IOUtils.copy(reader, to);
          to.flush();
       }
-      finally
-      {
+      finally {
          currentFileExt.set(null);
       }
    }

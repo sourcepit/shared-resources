@@ -42,8 +42,7 @@ import org.sourcepit.common.manifest.merge.MultiValueHeaderMerger;
 /**
  * @author Bernd
  */
-public abstract class AbstractSharedResourcesMojo extends ResourcesMojo
-{
+public abstract class AbstractSharedResourcesMojo extends ResourcesMojo {
    /**
     * Set whether resources are filtered to replace tokens with parameterised values or not. The values are taken from
     * the <code>properties</code> element and from the properties in the files listed in the <code>filters</code>
@@ -59,10 +58,8 @@ public abstract class AbstractSharedResourcesMojo extends ResourcesMojo
    private File workingDirectory;
 
    @Override
-   public void execute() throws MojoExecutionException
-   {
-      try
-      {
+   public void execute() throws MojoExecutionException {
+      try {
          resourceProperties = null;
          cleanWorkingDirectory();
 
@@ -72,20 +69,16 @@ public abstract class AbstractSharedResourcesMojo extends ResourcesMojo
          final String enc = encoding == null ? ReaderFactory.FILE_ENCODING : encoding;
 
          final File[] members = new File(workingDirectory, getNormalizedTargetPath()).listFiles();
-         if (members != null)
-         {
-            for (File member : members)
-            {
-               if (member.isDirectory())
-               {
+         if (members != null) {
+            for (File member : members) {
+               if (member.isDirectory()) {
                   final File archive = createArchiveFile(member);
                   ZipUtils.zip(member, archive, enc);
                   FileUtils.deleteDirectory(member);
 
                   putEncodingProperty(archive.getName(), enc);
                }
-               else
-               {
+               else {
                   putEncodingProperty(member.getName(), enc);
                }
             }
@@ -101,11 +94,9 @@ public abstract class AbstractSharedResourcesMojo extends ResourcesMojo
          final Manifest manifest = ManifestFactory.eINSTANCE.createManifest();
          manifest.getHeaders().put(headerName, getTargetPath() == null ? "" : getTargetPath());
 
-         final MultiValueHeaderMerger headerMerger = new MultiValueHeaderMerger()
-         {
+         final MultiValueHeaderMerger headerMerger = new MultiValueHeaderMerger() {
             @Override
-            public boolean isResponsibleFor(String section, String header, String targetValue, String sourceValue)
-            {
+            public boolean isResponsibleFor(String section, String header, String targetValue, String sourceValue) {
                return headerName.equals(header);
             }
          };
@@ -115,106 +106,85 @@ public abstract class AbstractSharedResourcesMojo extends ResourcesMojo
 
          new MavenProjectManifestMerger().merge(project, getManifestFile(), merger, manifest);
       }
-      catch (IOException e)
-      {
+      catch (IOException e) {
          throw new MojoExecutionException(e.getLocalizedMessage(), e);
       }
    }
 
-   private void cleanWorkingDirectory() throws IOException
-   {
-      if (!workingDirectory.exists())
-      {
+   private void cleanWorkingDirectory() throws IOException {
+      if (!workingDirectory.exists()) {
          workingDirectory.mkdirs();
       }
       FileUtils.cleanDirectory(workingDirectory);
    }
 
-   private Object putEncodingProperty(final String path, final String encoding) throws IOException
-   {
+   private Object putEncodingProperty(final String path, final String encoding) throws IOException {
       return getResourceProperties().put("encoding//" + path, encoding);
    }
 
-   private void saveResourceProperties() throws IOException
-   {
-      if (resourceProperties != null && !resourceProperties.isEmpty())
-      {
+   private void saveResourceProperties() throws IOException {
+      if (resourceProperties != null && !resourceProperties.isEmpty()) {
          saveResourceProperties(getResourceProperties());
       }
    }
 
-   private void saveResourceProperties(Properties resourceProperties) throws IOException
-   {
+   private void saveResourceProperties(Properties resourceProperties) throws IOException {
       final File propsFile = getResourcePropertiesFile();
       final OutputStream out = new FileOutputStream(propsFile);
-      try
-      {
+      try {
          resourceProperties.store(out, null);
       }
-      finally
-      {
+      finally {
          IOUtils.closeQuietly(out);
       }
    }
 
-   private Properties getResourceProperties() throws IOException
-   {
-      if (resourceProperties == null)
-      {
+   private Properties getResourceProperties() throws IOException {
+      if (resourceProperties == null) {
          resourceProperties = loadResourceProperties();
       }
       return resourceProperties;
    }
 
-   private Properties loadResourceProperties() throws IOException, FileNotFoundException
-   {
+   private Properties loadResourceProperties() throws IOException, FileNotFoundException {
       final File propsFile = getResourcePropertiesFile();
       final InputStream in = new FileInputStream(propsFile);
-      try
-      {
+      try {
          final Properties properties = new Properties();
          properties.load(in);
          return properties;
       }
-      finally
-      {
+      finally {
          IOUtils.closeQuietly(in);
       }
    }
 
-   private File getResourcePropertiesFile() throws IOException
-   {
+   private File getResourcePropertiesFile() throws IOException {
       String path = getNormalizedTargetPath();
       path += "resources.properties";
 
       final File propsFile = new File(getProcessedResourcesDirectory(), path);
-      if (!propsFile.exists())
-      {
+      if (!propsFile.exists()) {
          propsFile.getParentFile().mkdirs();
          propsFile.createNewFile();
       }
       return propsFile;
    }
 
-   private String getNormalizedTargetPath()
-   {
+   private String getNormalizedTargetPath() {
       String path = "";
-      if (getTargetPath() != null)
-      {
+      if (getTargetPath() != null) {
          path += getTargetPath().replace(File.separatorChar, '/');
-         if (!path.endsWith("/"))
-         {
+         if (!path.endsWith("/")) {
             path += "/";
          }
       }
       return path;
    }
 
-   private File createArchiveFile(File sourceDir) throws IOException
-   {
+   private File createArchiveFile(File sourceDir) throws IOException {
       File archive = new File(workingDirectory + "/" + getNormalizedTargetPath() + sourceDir.getName() + ".zip");
-      if (archive.exists())
-      {
+      if (archive.exists()) {
          FileUtils.deleteQuietly(sourceDir);
          archive.createNewFile();
       }
@@ -223,8 +193,7 @@ public abstract class AbstractSharedResourcesMojo extends ResourcesMojo
 
    // HACK we want to force the resources mojo to copy the template resources into our working directory first
    @Override
-   public final File getOutputDirectory()
-   {
+   public final File getOutputDirectory() {
       return workingDirectory;
    }
 
@@ -236,10 +205,8 @@ public abstract class AbstractSharedResourcesMojo extends ResourcesMojo
    private List<Resource> resources;
 
    @Override
-   public List<Resource> getResources()
-   {
-      if (resources == null)
-      {
+   public List<Resource> getResources() {
+      if (resources == null) {
          final Resource resource = new Resource();
          resource.setDirectory(getResourcesDirectory().getAbsolutePath());
          resource.setTargetPath(getTargetPath());

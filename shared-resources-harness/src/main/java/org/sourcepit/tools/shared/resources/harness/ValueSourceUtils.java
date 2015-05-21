@@ -25,35 +25,28 @@ import org.codehaus.plexus.interpolation.PropertiesBasedValueSource;
 import org.codehaus.plexus.interpolation.SingleResponseValueSource;
 import org.codehaus.plexus.interpolation.ValueSource;
 
-public final class ValueSourceUtils
-{
-   private ValueSourceUtils()
-   {
+public final class ValueSourceUtils {
+   private ValueSourceUtils() {
       super();
    }
 
-   public static ValueSource newPropertyValueSource(Properties properties)
-   {
+   public static ValueSource newPropertyValueSource(Properties properties) {
       return new PropertiesBasedValueSource(properties);
    }
 
-   public static ValueSource newSingleValueSource(String expression, Object value)
-   {
+   public static ValueSource newSingleValueSource(String expression, Object value) {
       return new SingleResponseValueSource(expression, value);
    }
 
-   public static ValueSource newPrefixedValueSource(String prefix, Object root)
-   {
+   public static ValueSource newPrefixedValueSource(String prefix, Object root) {
       return new PrefixedObjectValueSource(prefix, root);
    }
 
-   public static ValueSource newPrefixedValueSource(String[] possiblePrefixes, Object root)
-   {
+   public static ValueSource newPrefixedValueSource(String[] possiblePrefixes, Object root) {
       return newPrefixedValueSource(Arrays.asList(possiblePrefixes), root);
    }
 
-   public static ValueSource newPrefixedValueSource(List<String> possiblePrefixes, Object root)
-   {
+   public static ValueSource newPrefixedValueSource(List<String> possiblePrefixes, Object root) {
       return new PrefixedObjectValueSource(possiblePrefixes, root, true);
    }
 }

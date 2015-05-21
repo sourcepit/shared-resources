@@ -32,8 +32,7 @@ import org.sourcepit.tools.shared.resources.internal.harness.SharedResourcesUtil
 /**
  * @author Bernd
  */
-public abstract class AbstractPropertyInterpolator
-{
+public abstract class AbstractPropertyInterpolator {
    private LinkedHashSet<String> delimiters;
 
    private List<ValueSource> valueSources;
@@ -42,10 +41,8 @@ public abstract class AbstractPropertyInterpolator
 
    private boolean escapeWindowsPaths = true;
 
-   public LinkedHashSet<String> getDelimiters()
-   {
-      if (delimiters == null)
-      {
+   public LinkedHashSet<String> getDelimiters() {
+      if (delimiters == null) {
          delimiters = new LinkedHashSet<String>();
          delimiters.add("${*}");
          delimiters.add("@");
@@ -53,47 +50,36 @@ public abstract class AbstractPropertyInterpolator
       return delimiters;
    }
 
-   public List<ValueSource> getValueSources()
-   {
-      if (valueSources == null)
-      {
+   public List<ValueSource> getValueSources() {
+      if (valueSources == null) {
          valueSources = new ArrayList<ValueSource>();
       }
       return valueSources;
    }
 
-   public String getEscapeString()
-   {
+   public String getEscapeString() {
       return escapeString;
    }
 
-   public void setEscapeString(String escapeString)
-   {
+   public void setEscapeString(String escapeString) {
       this.escapeString = escapeString;
    }
 
-   public boolean isEscapeWindowsPaths()
-   {
+   public boolean isEscapeWindowsPaths() {
       return escapeWindowsPaths;
    }
 
-   public void setEscapeWindowsPaths(boolean escapeWindowsPaths)
-   {
+   public void setEscapeWindowsPaths(boolean escapeWindowsPaths) {
       this.escapeWindowsPaths = escapeWindowsPaths;
    }
 
-   protected IFilteredCopier newCopier()
-   {
-      final IFilteredCopier copier = new AbstractStreamCopier()
-      {
+   protected IFilteredCopier newCopier() {
+      final IFilteredCopier copier = new AbstractStreamCopier() {
          @Override
-         protected FilterWrapper getFilterWrapper(final InterpolationPostProcessor postProcessor)
-         {
-            final FileUtils.FilterWrapper filterWrapper = new FileUtils.FilterWrapper()
-            {
+         protected FilterWrapper getFilterWrapper(final InterpolationPostProcessor postProcessor) {
+            final FileUtils.FilterWrapper filterWrapper = new FileUtils.FilterWrapper() {
                @Override
-               public Reader getReader(Reader reader)
-               {
+               public Reader getReader(Reader reader) {
                   return SharedResourcesUtils.createFilterReader(reader, getDelimiters(), getValueSources(),
                      getEscapeString(), isEscapeWindowsPaths(), postProcessor);
                }

@@ -27,8 +27,7 @@ import org.apache.maven.plugins.annotations.Parameter;
  * @extendsGoal resources
  */
 @Mojo(name = "share-resources", defaultPhase = LifecyclePhase.PROCESS_RESOURCES, requiresProject = true)
-public class SharedResourcesMojo extends AbstractSharedResourcesMojo
-{
+public class SharedResourcesMojo extends AbstractSharedResourcesMojo {
    /**
     * The output directory into which to copy the resources.
     */
@@ -60,74 +59,62 @@ public class SharedResourcesMojo extends AbstractSharedResourcesMojo
    private String manifestHeaderName;
 
    @Override
-   public File _getOutputDirectory()
-   {
+   public File _getOutputDirectory() {
       return outputDirectory;
    }
 
    @Override
-   public void setOutputDirectory(File outputDirectory)
-   {
+   public void setOutputDirectory(File outputDirectory) {
       this.outputDirectory = outputDirectory;
    }
 
    @Override
-   public File getResourcesDirectory()
-   {
+   public File getResourcesDirectory() {
       return resourcesDirectory;
    }
 
    @Override
-   public void setResourcesDirectory(File resourcesDirectory)
-   {
+   public void setResourcesDirectory(File resourcesDirectory) {
       this.resourcesDirectory = resourcesDirectory;
    }
 
    @Override
-   public File getProcessedResourcesDirectory()
-   {
+   public File getProcessedResourcesDirectory() {
       return processedResourcesDirectory;
    }
 
    @Override
-   public void setProcessedResourcesDirectory(File processedResourcesDirectory)
-   {
+   public void setProcessedResourcesDirectory(File processedResourcesDirectory) {
       this.processedResourcesDirectory = processedResourcesDirectory;
    }
 
    @Override
-   public String getTargetPath()
-   {
+   public String getTargetPath() {
       return targetPath;
    }
 
    @Override
-   public void setTargetPath(String targetPath)
-   {
+   public void setTargetPath(String targetPath) {
       this.targetPath = targetPath;
    }
 
    @Override
-   public void setManifestFile(File manifestFile)
-   {
+   public void setManifestFile(File manifestFile) {
       this.manifestFile = manifestFile;
    }
 
    @Override
-   public File getManifestFile()
-   {
+   public File getManifestFile() {
       return manifestFile;
    }
 
    @Override
-   public String getManifestHeaderName()
-   {
+   public String getManifestHeaderName() {
       return manifestHeaderName;
    }
 
    @Override
-   public void setManifestHeaderName(String manifestHeaderName)
-   {
+   public void setManifestHeaderName(String manifestHeaderName) {
       this.manifestHeaderName = manifestHeaderName;
    }
 }

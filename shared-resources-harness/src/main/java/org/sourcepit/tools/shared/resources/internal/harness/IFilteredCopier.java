@@ -24,8 +24,7 @@ import java.io.Reader;
 import java.io.Writer;
 
 
-public interface IFilteredCopier
-{
+public interface IFilteredCopier {
    void copy(InputStream from, OutputStream to, String encoding, File outFile) throws IOException;
 
    void copy(Reader from, Writer to, File outFile) throws IOException;

@@ -31,16 +31,13 @@ import junit.framework.TestCase;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.sourcepit.tools.shared.resources.internal.mojo.ZipUtils;
 
-public class ZipUtilsTest extends TestCase
-{
+public class ZipUtilsTest extends TestCase {
    private File targetFolder;
    private File testResources;
 
    @Override
-   protected void setUp() throws Exception
-   {
+   protected void setUp() throws Exception {
       super.setUp();
       targetFolder = new File("target");
       assertTrue(targetFolder.exists() && targetFolder.isDirectory());
@@ -48,8 +45,7 @@ public class ZipUtilsTest extends TestCase
       assertTrue(testResources.exists() && testResources.isDirectory());
    }
 
-   public void testZip() throws Exception
-   {
+   public void testZip() throws Exception {
       final File directory = new File(testResources, "ZipUtilsTest");
       assertTrue(directory.exists() && directory.isDirectory());
 
@@ -62,18 +58,15 @@ public class ZipUtilsTest extends TestCase
       ZipUtils.zip(directory, archive, encoding);
    }
 
-   public void testWriteReadeFile() throws Exception
-   {
+   public void testWriteReadeFile() throws Exception {
       final File utf8 = new File(getWorkingDir(), "utf8.txt");
       utf8.createNewFile();
 
       OutputStream out = new FileOutputStream(utf8);
-      try
-      {
+      try {
          IOUtils.copy(new ByteArrayInputStream("ü漢字 / 汉字".getBytes("UTF-8")), out);
       }
-      finally
-      {
+      finally {
          IOUtils.closeQuietly(out);
       }
 
@@ -81,20 +74,17 @@ public class ZipUtilsTest extends TestCase
       latin1.createNewFile();
 
       InputStream in = new FileInputStream(utf8);
-      try
-      {
+      try {
          out = new FileOutputStream(latin1);
          convert(in, "UTF-8", out, "ISO-8859-1");
       }
-      finally
-      {
+      finally {
          IOUtils.closeQuietly(out);
          IOUtils.closeQuietly(in);
       }
    }
 
-   public void testXml() throws Exception
-   {
+   public void testXml() throws Exception {
       final File latin1 = new File(getWorkingDir(), "latin1.xml");
       latin1.createNewFile();
 
@@ -102,32 +92,27 @@ public class ZipUtilsTest extends TestCase
 
       InputStream in = new FileInputStream(xmlFile);
       OutputStream out = null;
-      try
-      {
+      try {
          out = new FileOutputStream(latin1);
          convert(in, "ISO-8859-1", out, "ISO-8859-1");
       }
-      finally
-      {
+      finally {
          IOUtils.closeQuietly(in);
       }
 
    }
 
    private static void convert(InputStream input, String inputCharset, OutputStream output, String outputCharset)
-      throws IOException, UnsupportedEncodingException
-   {
+      throws IOException, UnsupportedEncodingException {
       InputStreamReader reader = new InputStreamReader(input, inputCharset);
       OutputStreamWriter writer = new OutputStreamWriter(output, outputCharset);
       IOUtils.copy(reader, writer);
       writer.flush();
    }
 
-   private File getWorkingDir()
-   {
+   private File getWorkingDir() {
       final File ws = new File(targetFolder, "testWorkspaces/" + getClass().getSimpleName() + "/" + getName());
-      if (!ws.exists())
-      {
+      if (!ws.exists()) {
          ws.mkdirs();
       }
       return ws;

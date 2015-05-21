@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -51,23 +50,19 @@ import org.codehaus.plexus.interpolation.multi.MultiDelimiterStringSearchInterpo
 /**
  * @author Bernd
  */
-public final class SharedResourcesUtils
-{
-   private SharedResourcesUtils()
-   {
+public final class SharedResourcesUtils {
+   private SharedResourcesUtils() {
       super();
    }
 
    public static void copy(ClassLoader classLoader, String resourcesLocation, String resourcesPath, File targetDir,
-      boolean keepArchivePaths, IFilteredCopier copier) throws FileNotFoundException, IOException
-   {
+      boolean keepArchivePaths, IFilteredCopier copier) throws FileNotFoundException, IOException {
       copy(classLoader, resourcesLocation, resourcesPath, targetDir, keepArchivePaths, copier, IFilterStrategy.TRUE);
    }
 
    public static void copy(ClassLoader classLoader, String resourcesLocation, String resourcesPath, File targetDir,
       boolean keepArchivePaths, IFilteredCopier copier, IFilterStrategy strategy) throws FileNotFoundException,
-      IOException
-   {
+      IOException {
       final Properties resources = loadResourcesProperties(classLoader, resourcesLocation);
 
       String encoding = null;
@@ -77,45 +72,36 @@ public final class SharedResourcesUtils
       final String _resourcesPath = normalizeResourcesPath(resourcesPath);
 
       final int segmentLength = _resourcesPath.indexOf('/');
-      if (segmentLength > -1)
-      {
+      if (segmentLength > -1) {
          final String _archiveName = _resourcesPath.substring(0, segmentLength) + ".zip";
          encoding = resources.getProperty("encoding//" + _archiveName);
-         if (encoding != null)
-         {
+         if (encoding != null) {
             archiveName = _archiveName;
             path = _resourcesPath.substring(segmentLength + 1);
          }
       }
-      else
-      {
+      else {
          encoding = resources.getProperty("encoding//" + _resourcesPath);
-         if (encoding == null)
-         {
+         if (encoding == null) {
             final String _archiveName = _resourcesPath + ".zip";
             encoding = resources.getProperty("encoding//" + _archiveName);
-            if (encoding != null)
-            {
+            if (encoding != null) {
                archiveName = _archiveName;
             }
          }
-         else
-         {
+         else {
             path = _resourcesPath;
          }
       }
 
-      if (archiveName == null)
-      {
-         if (path == null)
-         {
+      if (archiveName == null) {
+         if (path == null) {
             throw new FileNotFoundException("Unable to resolve path: " + resourcesPath);
          }
          importFile(classLoader, createFullResourcesPath(resourcesLocation, path), path, encoding, targetDir, copier,
             strategy);
       }
-      else
-      {
+      else {
          importArchive(classLoader, createFullResourcesPath(resourcesLocation, archiveName), path,
             archiveName.substring(0, archiveName.length() - 4), encoding, targetDir, keepArchivePaths, copier, strategy);
       }
@@ -123,90 +109,71 @@ public final class SharedResourcesUtils
 
    private static void importArchive(ClassLoader classLoader, String archivePath, String archiveEntry, String dirName,
       String encoding, File targetDir, boolean keepArchivePaths, IFilteredCopier copier, IFilterStrategy strategy)
-      throws FileNotFoundException, IOException
-   {
+      throws FileNotFoundException, IOException {
       final InputStream in = classLoader.getResourceAsStream(archivePath);
-      if (in == null)
-      {
+      if (in == null) {
          throw new FileNotFoundException(archivePath);
       }
 
       final String _dirName = !keepArchivePaths ? "" : dirName;
       final File outDir = new File(targetDir, _dirName);
-      if (!outDir.exists())
-      {
+      if (!outDir.exists()) {
          outDir.mkdirs();
       }
       final ZipArchiveInputStream zipIn = new ZipArchiveInputStream(in, encoding, true);
-      try
-      {
+      try {
          importArchive(zipIn, archiveEntry, outDir, keepArchivePaths, encoding, copier, strategy);
       }
-      finally
-      {
+      finally {
          IOUtils.closeQuietly(zipIn);
       }
    }
 
    private static void importArchive(ZipArchiveInputStream zipIn, String archiveEntry, File outDir,
-      boolean keepArchivePaths, String encoding, IFilteredCopier copier, IFilterStrategy strategy) throws IOException
-   {
+      boolean keepArchivePaths, String encoding, IFilteredCopier copier, IFilterStrategy strategy) throws IOException {
       boolean found = false;
 
       ArchiveEntry entry = zipIn.getNextEntry();
-      while (entry != null)
-      {
+      while (entry != null) {
          final String entryName = entry.getName();
 
-         if (archiveEntry == null || entryName.startsWith(archiveEntry + "/") || entryName.equals(archiveEntry))
-         {
+         if (archiveEntry == null || entryName.startsWith(archiveEntry + "/") || entryName.equals(archiveEntry)) {
             found = true;
 
             boolean isDir = entry.isDirectory();
 
             final String fileName;
-            if (archiveEntry == null || keepArchivePaths)
-            {
+            if (archiveEntry == null || keepArchivePaths) {
                fileName = entryName;
             }
-            else
-            {
-               if (entryName.startsWith(archiveEntry + "/"))
-               {
+            else {
+               if (entryName.startsWith(archiveEntry + "/")) {
                   fileName = entryName.substring(archiveEntry.length() + 1);
                }
-               else if (!isDir && entryName.equals(archiveEntry))
-               {
+               else if (!isDir && entryName.equals(archiveEntry)) {
                   fileName = new File(entryName).getName();
                }
-               else
-               {
+               else {
                   throw new IllegalStateException();
                }
             }
 
             final File file = new File(outDir, fileName);
-            if (entry.isDirectory())
-            {
+            if (entry.isDirectory()) {
                file.mkdir();
             }
-            else
-            {
+            else {
                file.createNewFile();
                OutputStream out = new FileOutputStream(file);
-               try
-               {
-                  if (copier != null && strategy.filter(fileName))
-                  {
+               try {
+                  if (copier != null && strategy.filter(fileName)) {
                      copy(zipIn, out, encoding, copier, file);
                   }
-                  else
-                  {
+                  else {
                      IOUtils.copy(zipIn, out);
                   }
                }
-               finally
-               {
+               finally {
                   IOUtils.closeQuietly(out);
                }
             }
@@ -214,118 +181,93 @@ public final class SharedResourcesUtils
          entry = zipIn.getNextEntry();
       }
 
-      if (!found)
-      {
+      if (!found) {
          throw new FileNotFoundException(archiveEntry);
       }
    }
 
    private static void importFile(ClassLoader classLoader, String path, String fileName, String encoding,
-      File targetDir, IFilteredCopier copier, IFilterStrategy strategy) throws FileNotFoundException, IOException
-   {
+      File targetDir, IFilteredCopier copier, IFilterStrategy strategy) throws FileNotFoundException, IOException {
       final InputStream in = classLoader.getResourceAsStream(path);
-      if (in == null)
-      {
+      if (in == null) {
          throw new FileNotFoundException(path);
       }
-      try
-      {
+      try {
          final File outFile = new File(targetDir, fileName);
-         if (!outFile.exists())
-         {
+         if (!outFile.exists()) {
             outFile.getParentFile().mkdirs();
             outFile.createNewFile();
          }
          final OutputStream out = new FileOutputStream(outFile);
-         try
-         {
-            if (copier != null && strategy.filter(fileName))
-            {
+         try {
+            if (copier != null && strategy.filter(fileName)) {
                copy(in, out, encoding, copier, outFile);
             }
-            else
-            {
+            else {
                IOUtils.copy(in, out);
             }
          }
-         finally
-         {
+         finally {
             IOUtils.closeQuietly(out);
          }
       }
-      finally
-      {
+      finally {
          IOUtils.closeQuietly(in);
       }
    }
 
-   private static Properties loadResourcesProperties(ClassLoader classLoader, String templatesLocation)
-   {
+   private static Properties loadResourcesProperties(ClassLoader classLoader, String templatesLocation) {
       final Properties resourceProperties = new Properties();
 
       final String pathToResourceProperties = createFullResourcesPath(templatesLocation, "resources.properties");
 
-      try
-      {
+      try {
          Enumeration<URL> resources = classLoader.getResources(pathToResourceProperties);
-         while (resources.hasMoreElements())
-         {
+         while (resources.hasMoreElements()) {
             InputStream in = null;
-            try
-            {
+            try {
                final URL url = (URL) resources.nextElement();
                in = url.openStream();
                resourceProperties.load(in);
             }
-            finally
-            {
+            finally {
                IOUtils.closeQuietly(in);
             }
          }
       }
-      catch (IOException e)
-      {
+      catch (IOException e) {
          throw new IllegalStateException(e);
       }
 
       return resourceProperties;
    }
 
-   protected static String createFullResourcesPath(String templatesLocation, String templateResourcesPath)
-   {
+   protected static String createFullResourcesPath(String templatesLocation, String templateResourcesPath) {
       final StringBuilder sb = new StringBuilder();
-      if (templatesLocation != null)
-      {
+      if (templatesLocation != null) {
          sb.append(normalizeResourcesPath(templatesLocation));
       }
-      if (sb.length() > 0 && sb.charAt(sb.length() - 1) != '/')
-      {
+      if (sb.length() > 0 && sb.charAt(sb.length() - 1) != '/') {
          sb.append('/');
       }
       sb.append(normalizeResourcesPath(templateResourcesPath));
       return sb.toString();
    }
 
-   protected static String normalizeResourcesPath(final String path)
-   {
-      if (path == null)
-      {
+   protected static String normalizeResourcesPath(final String path) {
+      if (path == null) {
          throw new IllegalArgumentException("Path must not be null.");
       }
       String result = path.replace('\\', '/');
-      if (result.startsWith("/"))
-      {
-         if (result.length() == 1)
-         {
+      if (result.startsWith("/")) {
+         if (result.length() == 1) {
             result = "";
          }
-         else
-         {
+         else {
             result = result.substring(1);
          }
       }
-      if (result.endsWith("/"))
-      {
+      if (result.endsWith("/")) {
          result = result.substring(0, result.length() - 1);
       }
       return result;
@@ -333,35 +275,28 @@ public final class SharedResourcesUtils
 
 
    private static void copy(InputStream from, OutputStream to, String encoding, IFilteredCopier copier, File outFile)
-      throws IOException
-   {
+      throws IOException {
       copier.copy(from, to, encoding, outFile);
    }
 
 
    public static Reader createFilterReader(Reader reader, LinkedHashSet<String> delimiters,
       Collection<ValueSource> valueSources, String escapeString, final boolean escapeWindowsPaths,
-      final InterpolationPostProcessor postProcessor)
-   {
+      final InterpolationPostProcessor postProcessor) {
       final MultiDelimiterStringSearchInterpolator interpolator = new MultiDelimiterStringSearchInterpolator();
       interpolator.setDelimiterSpecs(delimiters);
       interpolator.setEscapeString(escapeString);
 
 
-      interpolator.addPostProcessor(new InterpolationPostProcessor()
-      {
-         public Object execute(String expression, Object value)
-         {
-            if (escapeWindowsPaths && value instanceof String)
-            {
+      interpolator.addPostProcessor(new InterpolationPostProcessor() {
+         public Object execute(String expression, Object value) {
+            if (escapeWindowsPaths && value instanceof String) {
                value = FilteringUtils.escapeWindowsPath((String) value);
             }
 
-            if (postProcessor != null)
-            {
+            if (postProcessor != null) {
                final Object newValue = postProcessor.execute(expression, value);
-               if (newValue != null)
-               {
+               if (newValue != null) {
                   value = newValue;
                }
             }
@@ -370,23 +305,19 @@ public final class SharedResourcesUtils
       });
 
       final Set<String> prefixes = new HashSet<String>();
-      for (ValueSource valueSource : valueSources)
-      {
+      for (ValueSource valueSource : valueSources) {
          interpolator.addValueSource(valueSource);
          String[] _prefixes = SharedResourcesUtils.getPossiblePrefixes(valueSource);
-         if (_prefixes != null)
-         {
+         if (_prefixes != null) {
             Collections.addAll(prefixes, _prefixes);
          }
       }
 
       RecursionInterceptor ri = null;
-      if (prefixes != null && !prefixes.isEmpty())
-      {
+      if (prefixes != null && !prefixes.isEmpty()) {
          ri = new PrefixAwareRecursionInterceptor(prefixes, true);
       }
-      else
-      {
+      else {
          ri = new SimpleRecursionInterceptor();
       }
 
@@ -401,18 +332,14 @@ public final class SharedResourcesUtils
    }
 
    @SuppressWarnings("unchecked")
-   protected static String[] getPossiblePrefixes(ValueSource source)
-   {
-      try
-      {
-         if (AbstractDelegatingValueSource.class.isAssignableFrom(source.getClass()))
-         {
+   protected static String[] getPossiblePrefixes(ValueSource source) {
+      try {
+         if (AbstractDelegatingValueSource.class.isAssignableFrom(source.getClass())) {
             Field field = AbstractDelegatingValueSource.class.getDeclaredField("delegate");
             field.setAccessible(true);
 
             Object delegate = field.get(source);
-            if (delegate instanceof PrefixedValueSourceWrapper)
-            {
+            if (delegate instanceof PrefixedValueSourceWrapper) {
                PrefixedValueSourceWrapper pp = (PrefixedValueSourceWrapper) delegate;
 
                field = pp.getClass().getDeclaredField("possiblePrefixes");
@@ -423,8 +350,7 @@ public final class SharedResourcesUtils
          }
          return null;
       }
-      catch (Exception e)
-      {
+      catch (Exception e) {
          throw new IllegalStateException(e);
       }
    }

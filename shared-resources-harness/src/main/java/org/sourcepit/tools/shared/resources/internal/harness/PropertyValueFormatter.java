@@ -23,47 +23,38 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
-public class PropertyValueFormatter
-{
-   public String execute(String expression, String value)
-   {
+public class PropertyValueFormatter {
+   public String execute(String expression, String value) {
       return escapeJavaProperties(value.toString());
    }
 
-   public static String escapeJavaProperties(String string)
-   {
+   public static String escapeJavaProperties(String string) {
       final Properties properties = new Properties();
       properties.put("", string);
 
       final ByteArrayOutputStream out = new ByteArrayOutputStream();
-      try
-      {
+      try {
          properties.store(out, null);
       }
-      catch (IOException e)
-      {
+      catch (IOException e) {
          throw new IllegalStateException(e);
       }
 
       final String result;
-      try
-      {
+      try {
          result = new String(out.toByteArray(), "8859_1");
       }
-      catch (UnsupportedEncodingException e)
-      {
+      catch (UnsupportedEncodingException e) {
          throw new IllegalStateException(e);
       }
 
       final String propertyLine;
-      try
-      {
+      try {
          final BufferedReader br = new BufferedReader(new StringReader(result));
          br.readLine();
          propertyLine = br.readLine();
       }
-      catch (IOException e)
-      {
+      catch (IOException e) {
          throw new IllegalStateException(e);
       }
 

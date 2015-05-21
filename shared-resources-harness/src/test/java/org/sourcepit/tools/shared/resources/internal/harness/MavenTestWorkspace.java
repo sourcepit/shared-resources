@@ -24,54 +24,44 @@ import junit.framework.TestCase;
 
 import org.apache.commons.io.FileUtils;
 
-public class MavenTestWorkspace
-{
+public class MavenTestWorkspace {
    private final TestCase testCase;
    private final boolean deleteOnTearDown;
    private File ws;
    private String sharedResourcesLocation = "META-INF/shared-test-resources";
 
-   public MavenTestWorkspace(TestCase testCase, boolean deleteOnTearDown)
-   {
+   public MavenTestWorkspace(TestCase testCase, boolean deleteOnTearDown) {
       this.testCase = testCase;
       this.deleteOnTearDown = deleteOnTearDown;
    }
 
-   public void setSharedResourcesLocation(String sharedResourcesLocation)
-   {
+   public void setSharedResourcesLocation(String sharedResourcesLocation) {
       this.sharedResourcesLocation = sharedResourcesLocation;
    }
 
-   public File getDir()
-   {
+   public File getDir() {
       return ws;
    }
 
-   public void startUp()
-   {
+   public void startUp() {
       ws = create();
       ws.mkdirs();
       Assert.assertTrue(ws.exists());
       Assert.assertEquals(0, ws.list().length);
    }
 
-   public File importResources(String path)
-   {
+   public File importResources(String path) {
 
       return importResources(path, null);
    }
 
-   public File importResources(String sourcePath, String targetPath)
-   {
-      try
-      {
+   public File importResources(String sourcePath, String targetPath) {
+      try {
          File outDir;
-         if (targetPath == null)
-         {
+         if (targetPath == null) {
             outDir = getDir();
          }
-         else
-         {
+         else {
             outDir = new File(getDir(), targetPath);
             outDir.mkdirs();
          }
@@ -79,36 +69,29 @@ public class MavenTestWorkspace
             false, null);
          return outDir;
       }
-      catch (IOException e)
-      {
+      catch (IOException e) {
          throw new IllegalStateException(e);
       }
    }
 
-   protected File create()
-   {
+   protected File create() {
       final File ws = new File("target/test-workspaces/" + testCase.getClass().getSimpleName() + "/"
          + testCase.getName());
-      if (ws.exists())
-      {
+      if (ws.exists()) {
          Assert.assertTrue(FileUtils.deleteQuietly(ws));
       }
       return ws;
    }
 
-   public void tearDown()
-   {
-      if (deleteOnTearDown)
-      {
+   public void tearDown() {
+      if (deleteOnTearDown) {
          delete();
       }
       ws = null;
    }
 
-   public void delete()
-   {
-      if (ws != null && ws.exists())
-      {
+   public void delete() {
+      if (ws != null && ws.exists()) {
          Assert.assertTrue(FileUtils.deleteQuietly(ws));
       }
    }

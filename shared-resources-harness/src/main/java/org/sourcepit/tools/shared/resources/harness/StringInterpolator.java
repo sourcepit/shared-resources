@@ -27,25 +27,20 @@ import org.apache.commons.io.IOUtils;
 /**
  * @author Bernd
  */
-public class StringInterpolator extends AbstractPropertyInterpolator
-{
-   public String interpolate(String value)
-   {
+public class StringInterpolator extends AbstractPropertyInterpolator {
+   public String interpolate(String value) {
       StringWriter writer = null;
       Reader reader = null;
-      try
-      {
+      try {
          writer = new StringWriter();
          reader = new StringReader(value);
          newCopier().copy(reader, writer, null);
          IOUtils.copy(reader, writer);
       }
-      catch (IOException e)
-      {
+      catch (IOException e) {
          throw new IllegalStateException(e);
       }
-      finally
-      {
+      finally {
          IOUtils.closeQuietly(reader);
          IOUtils.closeQuietly(writer);
       }

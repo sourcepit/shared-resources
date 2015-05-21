@@ -17,50 +17,42 @@
 package org.sourcepit.tools.shared.resources.internal.harness;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import junit.framework.TestCase;
 
 import org.codehaus.plexus.interpolation.ValueSource;
 import org.sourcepit.tools.shared.resources.harness.ValueSourceUtils;
 
-import junit.framework.TestCase;
-
 /**
  * @author Bernd
  */
-public class SharedResourcesUtilsTest extends TestCase
-{
+public class SharedResourcesUtilsTest extends TestCase {
    private static final String SHARED_RESOURCES_LOCATION = "META-INF/shared-test-resources/";
 
    private MavenTestWorkspace ws = new MavenTestWorkspace(this, true);
 
    @Override
-   protected void setUp() throws Exception
-   {
+   protected void setUp() throws Exception {
       ws.startUp();
       super.setUp();
    }
 
    @Override
-   protected void tearDown() throws Exception
-   {
+   protected void tearDown() throws Exception {
       super.tearDown();
       ws.tearDown();
    }
 
-   public void testNormalizeTemplateResourcesPath() throws Exception
-   {
-      try
-      {
+   public void testNormalizeTemplateResourcesPath() throws Exception {
+      try {
          SharedResourcesUtils.normalizeResourcesPath(null);
          fail();
       }
-      catch (IllegalArgumentException e)
-      {
+      catch (IllegalArgumentException e) {
       }
       assertEquals("", SharedResourcesUtils.normalizeResourcesPath("/"));
       assertEquals("project.zip", SharedResourcesUtils.normalizeResourcesPath("\\project.zip"));
@@ -71,15 +63,12 @@ public class SharedResourcesUtilsTest extends TestCase
       assertEquals("projects/tests", SharedResourcesUtils.normalizeResourcesPath("/projects/tests/"));
    }
 
-   public void testCreateFullTemplateResourcesPath() throws Exception
-   {
-      try
-      {
+   public void testCreateFullTemplateResourcesPath() throws Exception {
+      try {
          SharedResourcesUtils.createFullResourcesPath("", null);
          fail();
       }
-      catch (IllegalArgumentException e)
-      {
+      catch (IllegalArgumentException e) {
       }
 
       assertEquals("project.zip", SharedResourcesUtils.createFullResourcesPath(null, "project.zip"));
@@ -91,24 +80,21 @@ public class SharedResourcesUtilsTest extends TestCase
       assertEquals("test/foo/project.zip", SharedResourcesUtils.createFullResourcesPath("test", "/foo/project.zip"));
    }
 
-   public void testImportFile() throws Exception
-   {
+   public void testImportFile() throws Exception {
       SharedResourcesUtils.copy(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst.txt", ws.getDir(), false,
          null);
       assertEquals(1, ws.getDir().list().length);
       assertEquals("täst.txt", ws.getDir().list()[0]);
    }
 
-   public void testImportFile_keepArchivePaths() throws Exception
-   {
+   public void testImportFile_keepArchivePaths() throws Exception {
       SharedResourcesUtils.copy(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst.txt", ws.getDir(), true,
          null);
       assertEquals(1, ws.getDir().list().length);
       assertEquals("täst.txt", ws.getDir().list()[0]);
    }
 
-   public void testImportArchive() throws Exception
-   {
+   public void testImportArchive() throws Exception {
       SharedResourcesUtils.copy(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst", ws.getDir(), false,
          null);
       assertEquals(2, ws.getDir().list().length);
@@ -118,8 +104,7 @@ public class SharedResourcesUtilsTest extends TestCase
 
       // map name to file, because on linux we have another file ordering..
       final Map<String, File> nameToFile = new HashMap<String, File>();
-      for (int i = 0; i < members1.length; i++)
-      {
+      for (int i = 0; i < members1.length; i++) {
          nameToFile.put(members1[i].getName(), members1[i]);
       }
 
@@ -139,10 +124,8 @@ public class SharedResourcesUtilsTest extends TestCase
       assertTrue(file1_1_1.isFile());
    }
 
-   public void testImportArchive_keepArchivePaths() throws Exception
-   {
-      SharedResourcesUtils
-         .copy(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst", ws.getDir(), true, null);
+   public void testImportArchive_keepArchivePaths() throws Exception {
+      SharedResourcesUtils.copy(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst", ws.getDir(), true, null);
       assertEquals(1, ws.getDir().list().length);
 
       File file1 = ws.getDir().listFiles()[0];
@@ -154,8 +137,7 @@ public class SharedResourcesUtilsTest extends TestCase
 
       // map name to file, because on linux we have another file ordering..
       final Map<String, File> nameToFile = new HashMap<String, File>();
-      for (int i = 0; i < members1.length; i++)
-      {
+      for (int i = 0; i < members1.length; i++) {
          nameToFile.put(members1[i].getName(), members1[i]);
       }
 
@@ -175,8 +157,7 @@ public class SharedResourcesUtilsTest extends TestCase
       assertTrue(file1_1_1.isFile());
    }
 
-   public void testImportFileInArchive() throws Exception
-   {
+   public void testImportFileInArchive() throws Exception {
       SharedResourcesUtils.copy(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst/foo.txt", ws.getDir(),
          false, null);
       assertEquals(1, ws.getDir().list().length);
@@ -189,8 +170,7 @@ public class SharedResourcesUtilsTest extends TestCase
          ws.getDir(), false, null);
    }
 
-   public void testImportFileInArchive_keepArchivePaths() throws Exception
-   {
+   public void testImportFileInArchive_keepArchivePaths() throws Exception {
       SharedResourcesUtils.copy(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst/foo.txt", ws.getDir(),
          true, null);
       assertEquals(1, ws.getDir().list().length);
@@ -207,8 +187,7 @@ public class SharedResourcesUtilsTest extends TestCase
       assertTrue(file1_1.isFile());
    }
 
-   public void testImportDirInArchive() throws Exception
-   {
+   public void testImportDirInArchive() throws Exception {
       SharedResourcesUtils.copy(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst/foo", ws.getDir(), false,
          null);
       assertEquals(1, ws.getDir().list().length);
@@ -218,8 +197,7 @@ public class SharedResourcesUtilsTest extends TestCase
       assertTrue(file1.isFile());
    }
 
-   public void testImportDirInArchive_keepArchivePaths() throws Exception
-   {
+   public void testImportDirInArchive_keepArchivePaths() throws Exception {
       SharedResourcesUtils.copy(getClass().getClassLoader(), SHARED_RESOURCES_LOCATION, "täst/foo", ws.getDir(), true,
          null);
       assertEquals(1, ws.getDir().list().length);
@@ -243,8 +221,7 @@ public class SharedResourcesUtilsTest extends TestCase
       assertTrue(file1_1_1.isFile());
    }
 
-   public void testGetPossiblePrefixes() throws Exception
-   {
+   public void testGetPossiblePrefixes() throws Exception {
       ValueSource source = ValueSourceUtils.newPropertyValueSource(new Properties());
       String[] actualPrefixes = SharedResourcesUtils.getPossiblePrefixes(source);
       assertNull(actualPrefixes);

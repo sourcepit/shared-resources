@@ -15,12 +15,9 @@
  */
 
 package org.sourcepit.tools.shared.resources.internal.harness;
-public interface IFilterStrategy
-{
-   static final IFilterStrategy TRUE = new IFilterStrategy()
-   {
-      public boolean filter(String fileName)
-      {
+public interface IFilterStrategy {
+   static final IFilterStrategy TRUE = new IFilterStrategy() {
+      public boolean filter(String fileName) {
          return true;
       }
    };

@@ -33,8 +33,7 @@ import org.sourcepit.tools.shared.resources.internal.harness.IFilterStrategy;
 import org.sourcepit.tools.shared.resources.internal.harness.IFilteredCopier;
 import org.sourcepit.tools.shared.resources.internal.harness.SharedResourcesUtils;
 
-public class SharedResourcesCopier extends AbstractPropertyInterpolator
-{
+public class SharedResourcesCopier extends AbstractPropertyInterpolator {
    private String manifestHeader = "Shared-Resources";
 
    private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -43,71 +42,56 @@ public class SharedResourcesCopier extends AbstractPropertyInterpolator
 
    private IFilterStrategy filterStrategy;
 
-   public boolean isFilter()
-   {
+   public boolean isFilter() {
       return filter;
    }
 
-   public IFilterStrategy getFilterStrategy()
-   {
-      if (this.filterStrategy == null)
-      {
+   public IFilterStrategy getFilterStrategy() {
+      if (this.filterStrategy == null) {
          this.filterStrategy = IFilterStrategy.TRUE;
       }
       return filterStrategy;
    }
 
-   public void setFilterStrategy(IFilterStrategy filterStrategy)
-   {
+   public void setFilterStrategy(IFilterStrategy filterStrategy) {
       this.filterStrategy = filterStrategy;
    }
 
-   public void setFilter(boolean filter)
-   {
+   public void setFilter(boolean filter) {
       this.filter = filter;
    }
 
-   public void setClassLoader(ClassLoader classLoader)
-   {
+   public void setClassLoader(ClassLoader classLoader) {
       this.classLoader = classLoader;
    }
 
-   public ClassLoader getClassLoader()
-   {
+   public ClassLoader getClassLoader() {
       return classLoader;
    }
 
-   public void setManifestHeader(String manifestHeader)
-   {
+   public void setManifestHeader(String manifestHeader) {
       this.manifestHeader = manifestHeader;
    }
 
-   public String getManifestHeader()
-   {
+   public String getManifestHeader() {
       return manifestHeader;
    }
 
-   public void copy(String resourcePath, File targetDir) throws IOException
-   {
+   public void copy(String resourcePath, File targetDir) throws IOException {
       final Collection<String> resourceLocations = new LinkedHashSet<String>();
 
       final Enumeration<URL> resources = classLoader.getResources("META-INF/MANIFEST.MF");
-      while (resources.hasMoreElements())
-      {
+      while (resources.hasMoreElements()) {
          final InputStream inputStream = resources.nextElement().openStream();
-         try
-         {
+         try {
             final String _resourceLocations = new Manifest(inputStream).getMainAttributes().getValue(manifestHeader);
-            if (_resourceLocations != null)
-            {
-               for (String resourceLocation : _resourceLocations.split(","))
-               {
+            if (_resourceLocations != null) {
+               for (String resourceLocation : _resourceLocations.split(",")) {
                   resourceLocations.add(resourceLocation.trim());
                }
             }
          }
-         finally
-         {
+         finally {
             IOUtils.closeQuietly(inputStream);
          }
       }
@@ -116,22 +100,18 @@ public class SharedResourcesCopier extends AbstractPropertyInterpolator
 
       final List<IOException> ioException = new ArrayList<IOException>();
 
-      for (String resourceLocation : resourceLocations)
-      {
-         try
-         {
+      for (String resourceLocation : resourceLocations) {
+         try {
             SharedResourcesUtils.copy(classLoader, resourceLocation, resourcePath, targetDir, false, copier,
                getFilterStrategy());
             return;
          }
-         catch (IOException e)
-         {
+         catch (IOException e) {
             ioException.add(e);
          }
       }
 
-      if (!ioException.isEmpty())
-      {
+      if (!ioException.isEmpty()) {
          throw ioException.get(0);
       }
 
