@@ -33,7 +33,6 @@ public class MavenProjectManifestMerger {
       Manifest current = loadManifest(manifestFile);
       merger.merge(current, manifest);
       current.eResource().save(null);
-      project.getProperties().setProperty("jar.useDefaultManifestFile", String.valueOf(true));
    }
 
    private Manifest loadManifest(File manifestFile) throws IOException {

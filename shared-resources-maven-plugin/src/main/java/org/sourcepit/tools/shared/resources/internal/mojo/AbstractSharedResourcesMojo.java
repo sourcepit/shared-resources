@@ -31,7 +31,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.resources.ResourcesMojo;
+import org.apache.maven.plugins.resources.ResourcesMojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.codehaus.plexus.util.ReaderFactory;
 import org.sourcepit.common.manifest.Manifest;
